@@ -2,6 +2,9 @@
 
 namespace Covaleski\LaravelRoa\Providers;
 
+use Covaleski\LaravelRoa\Resource\ModelCompiler;
+use Covaleski\LaravelRoa\Resource\ResourceLoader;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
 class PackageServiceProvider extends ServiceProvider
@@ -11,7 +14,8 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(ModelCompiler::class);
+        $this->app->singleton(ResourceLoader::class);
     }
 
     /**
@@ -19,6 +23,11 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Storage::macro('root', function () {
+            return Storage::build([
+                'driver' => 'local',
+                'root' => base_path(),
+            ]);
+        });
     }
 }
