@@ -2,6 +2,7 @@
 
 namespace Covaleski\LaravelRoa\Providers;
 
+use Covaleski\LaravelRoa\Console\Commands;
 use Covaleski\LaravelRoa\Resource\ModelCompiler;
 use Covaleski\LaravelRoa\Resource\ResourceLoader;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +44,13 @@ class PackageServiceProvider extends ServiceProvider
             ],
             groups: 'laravel-roa-config',
         );
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                Commands\Resource\CacheCommand::class,
+                Commands\Resource\ClearCommand::class,
+                Commands\Resource\ListCommand::class,
+            ]);
+        }
         Storage::macro('root', function () {
             return Storage::build([
                 'driver' => 'local',
