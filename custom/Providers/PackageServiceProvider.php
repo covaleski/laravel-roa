@@ -10,6 +10,20 @@ use Illuminate\Support\ServiceProvider;
 class PackageServiceProvider extends ServiceProvider
 {
     /**
+     * Project root directory.
+     */
+    protected string $root;
+
+    /**
+     * Create the service provider instance.
+     */
+    public function __construct($app)
+    {
+        $this->root = dirname(dirname(__DIR__));
+        return parent::__construct($app);
+    }
+
+    /**
      * Register services.
      */
     public function register(): void
@@ -23,6 +37,12 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->publishes(
+            paths: [
+                "{$this->root}/app/config/roa.php" => config_path('roa.php'),
+            ],
+            groups: 'laravel-roa-config',
+        );
         Storage::macro('root', function () {
             return Storage::build([
                 'driver' => 'local',
