@@ -71,6 +71,20 @@ class ResourceLoader
     }
 
     /**
+     * Execute a callback over each resource.
+     *
+     * @param callable(Resource $resource, string $name): void $callback
+     */
+    public function each(callable $callback): void
+    {
+        foreach ($this->all() as $name => $resource) {
+            if ($callback($resource, $name) === false) {
+                break;
+            }
+        }
+    }
+
+    /**
      * Check whether a resource is mapped.
      */
     public function exists(string $name): bool
