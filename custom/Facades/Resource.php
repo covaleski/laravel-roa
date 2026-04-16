@@ -5,7 +5,12 @@ namespace Covaleski\LaravelRoa\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Covaleski\LaravelRoa\Resource\ResourceService
+ * @method static array<string, \Covaleski\LaravelRoa\Resource\Resource> all() Get all mapped resources.
+ * @method static bool exists(string $name) Check whether a resource is mapped.
+ * @method static \Covaleski\LaravelRoa\Resource\Resource get(string $name) Get a resource by its unique name.
+ * @method static \Covaleski\LaravelRoa\Resource\Resource load(string $name) Load a resource by its unique name.
+ *
+ * @see \Covaleski\LaravelRoa\Resource\ResourceLoader
  */
 class Resource extends Facade
 {

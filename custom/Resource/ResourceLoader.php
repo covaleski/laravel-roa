@@ -60,7 +60,7 @@ class ResourceLoader
     /**
      * Get all mapped resources.
      *
-     * @var array<string, Resource>
+     * @return array<string, Resource>
      */
     public function all(): array
     {
