@@ -3,7 +3,10 @@
 namespace Covaleski\LaravelRoa\Resource;
 
 use Covaleski\LaravelRoa\Attributes\ResourceName;
+use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use ReflectionAttribute;
 use ReflectionClass;
 
 class ModelCompiler
@@ -22,7 +25,26 @@ class ModelCompiler
             $resource = new Resource();
             $resource->name = $this->compileName($class_name);
             $resource->model = $class_name;
+            $resource->attributes = $this->compileAttributes($class_name);
             return $resource;
+        });
+    }
+
+    /**
+     * Get the resource attributes of a model class.
+     *
+     * @return array<int, ResourceAttributeInterface>
+     */
+    public function compileAttributes(string $class_name): array
+    {
+        return $this->compiling($class_name, function () {
+            return Arr::map(
+                $this->reflection->getAttributes(
+                    ResourceAttributeInterface::class,
+                    ReflectionAttribute::IS_INSTANCEOF,
+                ),
+                fn ($v) => $v->newInstance(),
+            );
         });
     }
 

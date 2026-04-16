@@ -207,6 +207,6 @@ class ResourceLoader
      */
     protected function unserialize(string $data): Resource
     {
-        return unserialize($data, ['allowed_classes' => [Resource::class]]);
+        return unserialize($data);
     }
 }
