@@ -17,8 +17,8 @@ composer require covaleski/laravel-roa
 ### Accessing Mapped Resources
 
 By default, all models from `app/Models` are mapped and compiled to resource
-cache files that can be loaded as a `Covaleski\LaravelRoa\Resource\Resource`
-objects on demand using the `Covaleski\LaravelRoa\Facades\Resource` facade.
+cache files that can be loaded as a resource objects on demand using the
+`Resource` facade.
 
 The following example creates a simple JSON GET route for each model:
 
@@ -30,6 +30,77 @@ Resource::each(function ($resource) {
     Route::get(
         "/api/{$resource->name}",
         fn () => response()->json($resource->model::all()),
+    );
+});
+```
+
+### Resource Attributes
+
+All model attributes that implement the `ResourceAttributeInterface` are
+automatically added to the resource object, serving as additional metadata
+when accessing cached resources.
+
+The following example uses attributes to store model validation rules directly
+into the model's metadata:
+
+```php
+// app/Attributes/Ruleset.php
+
+namespace App\Attributes;
+
+use Attribute;
+use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
+
+#[Attribute(Attribute::TARGET_CLASS|Attribute::IS_REPEATABLE)]
+class Ruleset implements ResourceAttributeInterface
+{
+    public function __construct(
+        public string $attribute,
+        public string|array $rules,
+    ) {
+        //
+    }
+}
+```
+
+```php
+// app/Models/Book.php
+
+namespace App\Models;
+
+use App\Attributes\Ruleset;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+
+#[Fillable('isbn', 'title', 'author')]
+#[Ruleset('isbn', 'required|unique:books')]
+#[Ruleset('title', 'required')]
+#[Ruleset('author', 'required')]
+class Book extends Model
+{
+    //
+}
+```
+
+```php
+// routes/web.php
+
+use App\Attributes\Ruleset;
+use Covaleski\LaravelRoa\Facades\Resource;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+Resource::each(function ($resource) {
+    Route::post(
+        "/api/{$resource->name}",
+        function (Request $request) use ($resource) {
+            $attributes = $resource->getAttributes(Ruleset::class);
+            $rules = collect($attributes)->pluck('rules', 'attribute')->all();
+            $values = $request->validate($rules);
+            $model = new $resource->model;
+            $model->fill($values)->save();
+            return response()->json($model, 201);
+        },
     );
 });
 ```
