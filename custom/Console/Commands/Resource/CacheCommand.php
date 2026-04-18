@@ -8,7 +8,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('resource:cache')]
-#[Description('Map models and cache resources now.')]
+#[Description('Update mapped models and cache all resources.')]
 class CacheCommand extends Command
 {
     /**

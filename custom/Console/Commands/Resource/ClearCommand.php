@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 #[Signature('resource:clear')]
-#[Description('Clear all cached resources.')]
+#[Description('Clear mapped models and currently cached resources.')]
 class ClearCommand extends Command
 {
     /**

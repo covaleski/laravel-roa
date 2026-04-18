@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
 #[Signature('resource:list')]
-#[Description('List all currently mapped resources.')]
+#[Description('List all currently mapped models.')]
 class ListCommand extends Command
 {
     /**

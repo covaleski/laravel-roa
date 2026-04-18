@@ -119,6 +119,6 @@ The following directives are available in `config/roa.php`:
 
 | Command | Description |
 | --- | --- |
-| `resource:list` | Compile and list all mapped resources. |
-| `resource:clear` | Delete all currently compiled resource cache files. |
-| `resource:cache` | Clear cache files and re-compile all mapped resources. |
+| `resource:cache` | Update mapped models and cache all resources. |
+| `resource:clear` | Clear mapped models and currently cached resources. |
+| `resource:list` | List all currently mapped models. |
