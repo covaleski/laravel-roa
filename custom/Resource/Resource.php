@@ -3,6 +3,7 @@
 namespace Covaleski\LaravelRoa\Resource;
 
 use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class Resource
 {
@@ -15,6 +16,8 @@ class Resource
 
     /**
      * Model that originated the resource.
+     *
+     * @var class-string<Model>
      */
     public string $model;
 
