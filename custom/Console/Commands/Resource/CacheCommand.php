@@ -17,6 +17,6 @@ class CacheCommand extends Command
     public function handle()
     {
         $this->call('resource:clear');
-        Resource::all();
+        Resource::each(fn ($resource) => $resource->cache());
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Covaleski\LaravelRoa\Console\Commands\Resource;
 
+use Covaleski\LaravelRoa\Facades\Resource;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -17,11 +18,6 @@ class ClearCommand extends Command
      */
     public function handle()
     {
-        $disk = Storage::build(config('roa.cache'));
-        foreach ($disk->files() as $file) {
-            if (!Str::startsWith(basename($file), '.')) {
-                $disk->delete($file);
-            }
-        }
+        Resource::wipe();
     }
 }

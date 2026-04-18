@@ -17,17 +17,32 @@ class ModelCompiler
     final protected ReflectionClass $reflection;
 
     /**
+     * Create the model compiler instance.
+     *
+     * @param class-string<Model> $model
+     */
+    public function __construct(
+        /**
+         * Model class name.
+         *
+         * @var class-string<Model>
+         */
+        protected string $model,
+    ) {
+        //
+    }
+
+    /**
      * Compile the specified model class to a resource instance.
      */
-    public function compile(string $class_name): ResourceCache
+    public function compile(): ResourceCache
     {
-        return $this->compiling($class_name, function () use ($class_name) {
-            $resource = new ResourceCache();
-            $resource->name = $this->compileName($class_name);
-            $resource->model = $class_name;
-            $resource->attributes = $this->compileAttributes($class_name);
-            return $resource;
-        });
+        $this->initialize();
+        $resource = new ResourceCache();
+        $resource->name = $this->compileName();
+        $resource->model = $this->model;
+        $resource->attributes = $this->compileAttributes();
+        return $resource;
     }
 
     /**
@@ -35,51 +50,35 @@ class ModelCompiler
      *
      * @return array<int, ResourceAttributeInterface>
      */
-    public function compileAttributes(string $class_name): array
+    public function compileAttributes(): array
     {
-        return $this->compiling($class_name, function () {
-            return Arr::map(
-                $this->reflection->getAttributes(
-                    ResourceAttributeInterface::class,
-                    ReflectionAttribute::IS_INSTANCEOF,
-                ),
-                fn ($v) => $v->newInstance(),
-            );
-        });
+        $this->initialize();
+        return Arr::map(
+            $this->reflection->getAttributes(
+                ResourceAttributeInterface::class,
+                ReflectionAttribute::IS_INSTANCEOF,
+            ),
+            fn ($v) => $v->newInstance(),
+        );
     }
 
     /**
      * Get the resource name of a model class.
      */
-    public function compileName(string $class_name): string
+    public function compileName(): string
     {
-        return $this->compiling($class_name, function () use ($class_name) {
-            $attributes = $this->reflection->getAttributes(ResourceName::class);
-            return isset($attributes[0])
-                ? $attributes[0]->newInstance()->name
-                : Str::plural(Str::kebab(class_basename($class_name)));
-        });
+        $this->initialize();
+        $attributes = $this->reflection->getAttributes(ResourceName::class);
+        return isset($attributes[0])
+            ? $attributes[0]->newInstance()->name
+            : Str::plural(Str::kebab(class_basename($this->model)));
     }
 
     /**
-     * Run the specified compilation callback for the specified class.
-     *
-     * @template TResult
-     * @param class-string<Model> $class_name
-     * @param callable(): TResult $callback
-     * @return TResult
+     * Initialize lazy loaded properties.
      */
-    protected function compiling(string $class_name, callable $callback): mixed
+    public function initialize(): void
     {
-        if (isset($this->reflection)) {
-            return call_user_func($callback);
-        } else {
-            try {
-                $this->reflection = new ReflectionClass($class_name);
-                return call_user_func($callback);
-            } finally {
-                unset($this->reflection);
-            }
-        }
+        $this->reflection ??= new ReflectionClass($this->model);
     }
 }

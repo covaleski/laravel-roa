@@ -22,14 +22,12 @@ class ListCommand extends Command
             [
                 'Name',
                 'Model',
-                'Attributes',
+                'Cache',
             ],
             Arr::map(Resource::all(), fn ($resource) => [
                 $resource->name,
                 $resource->model,
-                collect($resource->attributes)
-                    ->map(fn ($v) => $this->formatAttribute($v))
-                    ->join("\n"),
+                $resource->getSize() ?? 'Not cached',
             ]),
         );
     }
