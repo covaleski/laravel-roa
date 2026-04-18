@@ -19,10 +19,10 @@ class ModelCompiler
     /**
      * Compile the specified model class to a resource instance.
      */
-    public function compile(string $class_name): Resource
+    public function compile(string $class_name): ResourceCache
     {
         return $this->compiling($class_name, function () use ($class_name) {
-            $resource = new Resource();
+            $resource = new ResourceCache();
             $resource->name = $this->compileName($class_name);
             $resource->model = $class_name;
             $resource->attributes = $this->compileAttributes($class_name);

@@ -2,18 +2,13 @@
 
 namespace Covaleski\LaravelRoa\Resource;
 
-use Covaleski\LaravelRoa\Attributes\IsResource;
 use Covaleski\LaravelRoa\Support\CachedArray;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
-use ReflectionClass;
 
 use function Covaleski\LaravelRoa\file_get_classes;
-use function Illuminate\Filesystem\join_paths;
 
 class ResourceLoader
 {
@@ -25,7 +20,7 @@ class ResourceLoader
     /**
      * Currently loaded resource instances.
      *
-     * @var array<string, Resource>
+     * @var array<string, ResourceCache>
      */
     protected array $instances = [];
 
@@ -60,7 +55,7 @@ class ResourceLoader
     /**
      * Get all mapped resources.
      *
-     * @return array<string, Resource>
+     * @return array<string, ResourceCache>
      */
     public function all(): array
     {
@@ -73,7 +68,7 @@ class ResourceLoader
     /**
      * Execute a callback over each resource.
      *
-     * @param callable(Resource $resource, string $name): void $callback
+     * @param callable(ResourceCache $resource, string $name): void $callback
      */
     public function each(callable $callback): void
     {
@@ -95,7 +90,7 @@ class ResourceLoader
     /**
      * Get a resource by its unique name.
      */
-    public function get(string $name): Resource
+    public function get(string $name): ResourceCache
     {
         $this->instances[$name] ??= $this->load($name);
         return $this->instances[$name];
@@ -104,7 +99,7 @@ class ResourceLoader
     /**
      * Load a resource by its unique name.
      */
-    public function load(string $name): Resource
+    public function load(string $name): ResourceCache
     {
         if (!$this->isCached($name)) {
             $this->cache($name);
@@ -123,7 +118,7 @@ class ResourceLoader
     /**
      * Compile a resource.
      */
-    protected function compile(string $name): Resource
+    protected function compile(string $name): ResourceCache
     {
         if (!$this->exists($name)) {
             $message = "No resource is mapped as '{$name}'";
@@ -202,7 +197,7 @@ class ResourceLoader
     /**
      * Save the specified resource to its cache file.
      */
-    protected function save(Resource $resource): void
+    protected function save(ResourceCache $resource): void
     {
         $data = $this->serialize($resource);
         $this->cacheDisk->put("{$resource->name}.cache", $data);
@@ -211,7 +206,7 @@ class ResourceLoader
     /**
      * Serialize a resource into cache data.
      */
-    protected function serialize(Resource $resource): string
+    protected function serialize(ResourceCache $resource): string
     {
         return serialize($resource);
     }
@@ -219,7 +214,7 @@ class ResourceLoader
     /**
      * Unserialize the contents of a file into a resource instance.
      */
-    protected function unserialize(string $data): Resource
+    protected function unserialize(string $data): ResourceCache
     {
         return unserialize($data);
     }

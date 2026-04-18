@@ -5,7 +5,7 @@ namespace Covaleski\LaravelRoa\Resource;
 use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class Resource
+class ResourceCache
 {
     /**
      * Attributes.
