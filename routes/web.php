@@ -1,8 +1,6 @@
 <?php
 
-use App\Attributes\View;
 use Covaleski\LaravelRoa\Facades\Resource;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -10,8 +8,8 @@ Route::get('/', function () {
 });
 
 Resource::each(function ($resource) {
-    array_map(
-        fn ($v) => Route::view($v->uri, $v->view, $v->data),
-        $resource->getAttributes(View::class),
+    Route::get(
+        "/api/{$resource->name}",
+        fn () => response()->json($resource->model::all()),
     );
 });
