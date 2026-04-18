@@ -107,15 +107,13 @@ Resource::each(function ($resource) {
 
 ## Configuration
 
-By default, all models in `app/Models` are mapped as resources and all cache
-files are saved in the `storage/resources` directory.
-
-Use the `roa.php` configuration file to change mapped directories and output
-destinations.
+Publish the `roa.php` configuration file to customize the package behavior:
 
 ```sh
 php artisan vendor:publish --tag=laravel-roa-config
 ```
+
+The following directives are available in `config/roa.php`:
 
 ## Commands
 
