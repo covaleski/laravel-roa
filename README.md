@@ -14,14 +14,24 @@ composer require covaleski/laravel-roa
 
 ## Usage
 
-Use the `Resource` facade to access information on mapped resources:
+### Accessing Mapped Resources
+
+By default, all models from `app/Models` are mapped and compiled to resource
+cache files that can be loaded as a `Covaleski\LaravelRoa\Resource\Resource`
+objects on demand using the `Covaleski\LaravelRoa\Facades\Resource` facade.
+
+The following example creates a simple JSON GET route for each model:
 
 ```php
 use Covaleski\LaravelRoa\Facades\Resource;
+use Illuminate\Support\Facades\Route;
 
-Resource::all(); // Get an array with all compiled resources
-Resource::get('users'); // Get a specific compiled resource
-Resource::exists('roles'); // Check if a resource is mapped
+Resource::each(function ($resource) {
+    Route::get(
+        "/api/{$resource->name}",
+        fn () => response()->json($resource->model::all()),
+    );
+});
 ```
 
 ## Configuration
