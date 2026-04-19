@@ -35,13 +35,4 @@ class ListCommand extends Command
             ])->all(),
         );
     }
-
-    /**
-     * Format a resource attribute as a string.
-     */
-    protected function formatAttribute(ResourceAttributeInterface $attribute): string
-    {
-        $flags = JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT;
-        return $attribute::class . ' ' . json_encode($attribute, $flags);
-    }
 }
