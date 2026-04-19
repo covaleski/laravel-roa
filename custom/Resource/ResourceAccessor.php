@@ -24,6 +24,11 @@ class ResourceAccessor
     protected ResourceCache $resourceCache;
 
     /**
+     * Resource parser.
+     */
+    protected ResourceParser $resourceParser;
+
+    /**
      * Invoke an inaccessible method.
      */
     public function __call(string $name, array $arguments)
@@ -56,6 +61,7 @@ class ResourceAccessor
     ) {
         $this->modelCompiler = new ModelCompiler($this->model);
         $this->path = "{$this->name}.cache";
+        $this->resourceParser = new ResourceParser();
     }
 
     /**
@@ -191,7 +197,7 @@ class ResourceAccessor
      */
     protected function parse(string $data): ResourceCache
     {
-        return unserialize($data);
+        return $this->resourceParser->parse($data);
     }
 
     /**
@@ -199,6 +205,6 @@ class ResourceAccessor
      */
     protected function unparse(ResourceCache $data): string
     {
-        return serialize($data);
+        return $this->resourceParser->unparse($data);
     }
 }
