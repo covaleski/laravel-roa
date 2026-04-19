@@ -4,6 +4,10 @@ namespace Covaleski\LaravelRoa;
 
 /**
  * Get all classes declared within the supplied PHP code.
+ *
+ * @see https://stackoverflow.com/a/27440555 Modified from this answer.
+ * @param string $code PHP code.
+ * @return array<int, class-string>
  */
 function file_get_classes(string $code): array
 {
@@ -37,10 +41,11 @@ function file_get_classes(string $code): array
 /**
  * Get a human-readable representation for the specified file size.
  *
+ * @see https://phpshare.org/ Modified from the Format Size Units snippet.
  * @param int $size File size in bytes.
  * @return string Human-readable representation in B/KB/MB/GB.
  */
-function format_filesize(int $size): string
+function format_size_units(int $size): string
 {
     if ($size >= 1073741824) {
         return number_format($size / 1073741824, 2) . ' GB';
