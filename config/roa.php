@@ -7,7 +7,7 @@ return [
     | Cache
     |--------------------------------------------------------------------------
     |
-    | This option defines how the resource cache files are compiled and stored.
+    | This option defines where resource cache files will be stored.
     |
     */
 
@@ -21,8 +21,8 @@ return [
     | Directories
     |--------------------------------------------------------------------------
     |
-    | This option defines which directories should be mapped to find and
-    | compile models into resource cache files.
+    | This option defines which directories will be searched to find models
+    | that can be compiled into resources.
     |
     */
 

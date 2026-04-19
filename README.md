@@ -115,6 +115,11 @@ php artisan vendor:publish --tag=laravel-roa-config
 
 The following directives are available in `config/roa.php`:
 
+| Key | Description |
+| --- | --- |
+| `cache` | Where to store resource cache files. |
+| `directories` | Where to find models. |
+
 ## Commands
 
 | Command | Description |
