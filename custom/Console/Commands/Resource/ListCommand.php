@@ -9,6 +9,8 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 
+use function Covaleski\LaravelRoa\format_filesize;
+
 #[Signature('resource:list')]
 #[Description('List all currently mapped models.')]
 class ListCommand extends Command
@@ -24,11 +26,13 @@ class ListCommand extends Command
                 'Model',
                 'Cache',
             ],
-            Arr::map(Resource::all(), fn ($resource) => [
+            collect(Resource::all())->map(fn ($resource) => [
                 $resource->name,
                 $resource->model,
-                $resource->getSize() ?? 'Not cached',
-            ]),
+                $resource->isCached()
+                    ? format_filesize($resource->getSize())
+                    : 'Not cached',
+            ])->all(),
         );
     }
 

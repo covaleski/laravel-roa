@@ -33,3 +33,22 @@ function file_get_classes(string $code): array
     }
     return $classes;
 }
+
+/**
+ * Get a human-readable representation for the specified file size.
+ *
+ * @param int $size File size in bytes.
+ * @return string Human-readable representation in B/KB/MB/GB.
+ */
+function format_filesize(int $size): string
+{
+    if ($size >= 1073741824) {
+        return number_format($size / 1073741824, 2) . ' GB';
+    } elseif ($size >= 1048576) {
+        return number_format($size / 1048576, 2) . ' MB';
+    } elseif ($size >= 1024) {
+        return number_format($size / 1024, 2) . ' KB';
+    } else {
+        return $size . ' bytes';
+    }
+}
