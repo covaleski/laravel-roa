@@ -76,6 +76,7 @@ class DocumentProxy extends Command
         $parameters = [];
         foreach ($method->getParameters() as $parameter) {
             $name = $parameter->getName();
+            if (Str::startsWith($name, '__')) continue;
             $filter = fn ($t) => $t->getName() === $name;
             $param_tag = array_filter($param_tags, $filter)[0] ?? null;
             $type = $param_tag?->getType() ?? $parameter->getType();
