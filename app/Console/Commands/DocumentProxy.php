@@ -28,7 +28,7 @@ class DocumentProxy extends Command
     {
         $class = $this->argument('class');
         $reflection = new ReflectionClass($class);
-        $this->context = $this->createContext($class, $reflection->getFileName());
+        $this->context = $this->makeContext($class, $reflection->getFileName());
         $this->docBlockFactory = DocBlockFactory::createInstance();
         $this->line('/**');
         $properties = $reflection->getProperties(ReflectionProperty::IS_PUBLIC);

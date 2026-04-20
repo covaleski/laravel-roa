@@ -120,7 +120,7 @@ class ModelCompiler
     public function initialize(): void
     {
         $this->reflection ??= new ReflectionClass($this->model);
-        $this->context = $this->createContext($this->model, $this->reflection->getFileName());
+        $this->context = $this->makeContext($this->model, $this->reflection->getFileName());
         $this->docBlockFactory = DocBlockFactory::createInstance();
     }
 

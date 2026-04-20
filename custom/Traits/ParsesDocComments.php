@@ -23,7 +23,7 @@ trait ParsesDocComments
     /**
      * Create a phpDocumentor context for the specified class and file.
      */
-    protected function createContext(string $class, string $filename): Context
+    protected function makeContext(string $class, string $filename): Context
     {
         $namespace = '\\' . ltrim(Str::beforeLast($class, '\\'), '\\');
         $contents = file_get_contents($filename);
