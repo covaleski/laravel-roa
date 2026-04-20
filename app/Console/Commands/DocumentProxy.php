@@ -2,18 +2,15 @@
 
 namespace App\Console\Commands;
 
-use Covaleski\LaravelRoa\Resource\ResourceCache;
+use Covaleski\LaravelRoa\Traits\ParsesDocComments;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
-use phpDocumentor\Reflection\DocBlock;
 use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use phpDocumentor\Reflection\DocBlockFactory;
-use phpDocumentor\Reflection\Types\Context;
-use phpDocumentor\Reflection\Types\ContextFactory;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -22,15 +19,7 @@ use ReflectionProperty;
 #[Description('Outputs proxied properties and methods from ResourceCache.')]
 class DocumentProxy extends Command
 {
-    /**
-     * Context.
-     */
-    protected Context $context;
-
-    /**
-     * Doc block factory.
-     */
-    protected DocBlockFactory $docBlockFactory;
+    use ParsesDocComments;
 
     /**
      * Execute the console command.
@@ -53,16 +42,6 @@ class DocumentProxy extends Command
         $this->line(' *');
         $this->line(" * @uses {$class} to proxy its members.");
         $this->line(' */');
-    }
-
-    /**
-     * Create a phpDocumentor context for the specified class and file.
-     */
-    protected function createContext(string $class, string $filename): Context
-    {
-        $namespace = '\\' . ltrim(Str::beforeLast($class, '\\'), '\\');
-        $contents = file_get_contents($filename);
-        return (new ContextFactory())->createForNamespace($namespace, $contents);
     }
 
     /**
@@ -103,13 +82,5 @@ class DocumentProxy extends Command
         $type = $var_tag?->getType() ?? $property->getType();
         $description = $doc_block->getSummary();
         return "@property {$type} \${$name} {$description}";
-    }
-
-    /**
-     * Parse a doc comment as a phpDocumentor doc block instance.
-     */
-    protected function parseDocComment(string $doc_comment): DocBlock
-    {
-        return $this->docBlockFactory->create($doc_comment, $this->context);
     }
 }
