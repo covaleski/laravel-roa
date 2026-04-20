@@ -122,8 +122,11 @@ The following directives are available in `config/roa.php`:
 
 ## Commands
 
+The following commands are available for resource maintenance:
+
 | Command | Description |
 | --- | --- |
 | `resource:cache` | Update mapped models and cache all resources. |
 | `resource:clear` | Clear mapped models and currently cached resources. |
 | `resource:list` | List all currently mapped models. |
+| `resource:show {resource}` | Show details of the specified resource. |
