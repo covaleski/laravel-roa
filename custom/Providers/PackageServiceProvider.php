@@ -47,6 +47,7 @@ class PackageServiceProvider extends ServiceProvider
                 Commands\Resource\CacheCommand::class,
                 Commands\Resource\ClearCommand::class,
                 Commands\Resource\ListCommand::class,
+                Commands\Resource\ShowCommand::class,
             ]);
         }
         Storage::macro('root', function () {
