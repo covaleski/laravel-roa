@@ -4,6 +4,7 @@ namespace Covaleski\LaravelRoa\Resource;
 
 use Covaleski\LaravelRoa\Attributes\ResourceName;
 use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use ReflectionAttribute;
@@ -33,7 +34,7 @@ class ModelCompiler
     }
 
     /**
-     * Compile the specified model class to a resource instance.
+     * Compile the model to a resource cache instance.
      */
     public function compile(): ResourceCache
     {
@@ -46,7 +47,7 @@ class ModelCompiler
     }
 
     /**
-     * Get the resource attributes of a model class.
+     * Get the resource attributes from the model.
      *
      * @return array<int, ResourceAttributeInterface>
      */
@@ -63,7 +64,7 @@ class ModelCompiler
     }
 
     /**
-     * Get the resource name of a model class.
+     * Get the resource name from the model.
      */
     public function compileName(): string
     {
