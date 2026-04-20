@@ -3,8 +3,7 @@
 namespace Covaleski\LaravelRoa\Providers;
 
 use Covaleski\LaravelRoa\Console\Commands;
-use Covaleski\LaravelRoa\Resource\ModelCompiler;
-use Covaleski\LaravelRoa\Resource\ResourceLoader;
+use Covaleski\LaravelRoa\Resource\ResourceMap;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,8 +28,7 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(ModelCompiler::class);
-        $this->app->singleton(ResourceLoader::class);
+        $this->app->singleton(ResourceMap::class);
     }
 
     /**
