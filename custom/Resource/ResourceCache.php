@@ -3,6 +3,7 @@
 namespace Covaleski\LaravelRoa\Resource;
 
 use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
+use Covaleski\LaravelRoa\Resource\Relationship;
 use Illuminate\Database\Eloquent\Model;
 
 class ResourceCache
@@ -25,6 +26,13 @@ class ResourceCache
      * Resource unique snake-case name.
      */
     public string $name;
+
+    /**
+     * Related models.
+     *
+     * @var array<string, Relationship>
+     */
+    public array $relationships;
 
     /**
      * Get the first attribute of the specified class name.
