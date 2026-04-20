@@ -8,7 +8,7 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('resource:show {resource}')]
-#[Description('Compile and show the details of the specified resource.')]
+#[Description('Show details of the specified resource.')]
 class ShowCommand extends Command
 {
     /**
