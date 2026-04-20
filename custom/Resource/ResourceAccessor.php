@@ -68,9 +68,9 @@ class ResourceAccessor
          */
         protected Filesystem $disk,
     ) {
-        $this->modelCompiler = new ModelCompiler($this->model);
-        $this->path = "{$this->name}.cache";
-        $this->resourceParser = new ResourceParser();
+        $this->modelCompiler = $this->makeModelCompiler();
+        $this->path = $this->makePath();
+        $this->resourceParser = $this->makeResourceParser();
     }
 
     /**
@@ -199,6 +199,30 @@ class ResourceAccessor
     public function unload(): void
     {
         unset($this->resourceCache);
+    }
+
+    /**
+     * Create a model compiler instance for the current context.
+     */
+    public function makeModelCompiler(): ModelCompiler
+    {
+        return new ModelCompiler($this->model);
+    }
+
+    /**
+     * Create a cache file path for the current context.
+     */
+    public function makePath(): string
+    {
+        return "{$this->name}.cache";
+    }
+
+    /**
+     * Create a resource parser instance for the current context.
+     */
+    public function makeResourceParser(): ResourceParser
+    {
+        return new ResourceParser();
     }
 
     /**
