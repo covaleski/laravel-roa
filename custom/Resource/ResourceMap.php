@@ -49,9 +49,7 @@ class ResourceMap
      */
     public function __construct()
     {
-        $this->cacheDisk = Storage::build(config('roa.cache'));
-        $this->path = 'resources.map';
-        $this->rootDisk = Storage::root();
+        $this->path = $this->makePath();
     }
 
     /**
@@ -105,8 +103,8 @@ class ResourceMap
      */
     public function delete(): void
     {
-        if ($this->cacheDisk->exists($this->path)) {
-            $this->cacheDisk->delete($this->path);
+        if ($this->getCacheDisk()->exists($this->path)) {
+            $this->getCacheDisk()->delete($this->path);
         }
     }
 
@@ -145,7 +143,6 @@ class ResourceMap
         $this->resourceAccessors[$name] ??= new ResourceAccessor(
             $name,
             $this->map[$name],
-            $this->cacheDisk,
         );
         return $this->resourceAccessors[$name];
     }
@@ -155,7 +152,7 @@ class ResourceMap
      */
     public function isCached(): bool
     {
-        return $this->cacheDisk->exists($this->path);
+        return $this->getCacheDisk()->exists($this->path);
     }
 
     /**
@@ -174,7 +171,7 @@ class ResourceMap
         if (!$this->isCached()) {
             throw new RuntimeException('Resource is not cached.');
         }
-        $this->map = $this->parse($this->cacheDisk->get($this->path));
+        $this->map = $this->parse($this->getCacheDisk()->get($this->path));
     }
 
     /**
@@ -185,7 +182,7 @@ class ResourceMap
         if (!$this->isLoaded()) {
             throw new RuntimeException('Resource cache is not set.');
         }
-        $this->cacheDisk->put($this->path, $this->unparse($this->map));
+        $this->getCacheDisk()->put($this->path, $this->unparse($this->map));
     }
 
     /**
@@ -201,9 +198,9 @@ class ResourceMap
      */
     public function wipe(): void
     {
-        foreach ($this->cacheDisk->files() as $file) {
+        foreach ($this->getCacheDisk()->files() as $file) {
             if (Str::endsWith($file, '.cache')) {
-                $this->cacheDisk->delete($file);
+                $this->getCacheDisk()->delete($file);
             }
         }
         $this->clear();
@@ -218,6 +215,24 @@ class ResourceMap
     }
 
     /**
+     * Get the lazy-loaded filesystem instance for the cache directory.
+     */
+    protected function getCacheDisk(): Filesystem
+    {
+        $this->cacheDisk ??= $this->makeCacheDisk();
+        return $this->cacheDisk;
+    }
+
+    /**
+     * Get the lazy-loaded filesystem instance for the project directory.
+     */
+    protected function getRootDisk(): Filesystem
+    {
+        $this->rootDisk ??= $this->makeRootDisk();
+        return $this->rootDisk;
+    }
+
+    /**
      * Ensure map data is loaded to memory.
      */
     protected function ensureMap(): void
@@ -226,6 +241,30 @@ class ResourceMap
             $this->cache();
             $this->load();
         }
+    }
+
+    /**
+     * Create a filesystem instance for the cache directory.
+     */
+    protected function makeCacheDisk(): Filesystem
+    {
+        return Storage::build(config('roa.cache'));
+    }
+
+    /**
+     * Create a resource map file path for the current context.
+     */
+    protected function makePath(): string
+    {
+        return "resources.map";
+    }
+
+    /**
+     * Create a filesystem instance for the project directory.
+     */
+    protected function makeRootDisk(): Filesystem
+    {
+        return Storage::root();
     }
 
     /**
@@ -260,7 +299,7 @@ class ResourceMap
      */
     protected function mapDirectory(string $path): array
     {
-        return collect($this->rootDisk->files($path))
+        return collect($this->getRootDisk()->files($path))
             ->flatMap(fn ($file) => $this->mapFile($file))
             ->toArray();
     }
@@ -272,7 +311,7 @@ class ResourceMap
      */
     protected function mapFile(string $path): array
     {
-        return $this->mapCode($this->rootDisk->get($path));
+        return $this->mapCode($this->getRootDisk()->get($path));
     }
 
     /**

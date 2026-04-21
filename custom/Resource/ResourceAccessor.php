@@ -4,6 +4,7 @@ namespace Covaleski\LaravelRoa\Resource;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 /**
@@ -17,6 +18,11 @@ use RuntimeException;
  */
 class ResourceAccessor
 {
+    /**
+     * Filesystem disk instance.
+     */
+    protected Filesystem $disk;
+
     /**
      * Model compiler.
      */
@@ -62,11 +68,6 @@ class ResourceAccessor
          * @var class-string<Model>
          */
         public string $model,
-
-        /**
-         * Filesystem disk instance.
-         */
-        protected Filesystem $disk,
     ) {
         $this->modelCompiler = $this->makeModelCompiler();
         $this->path = $this->makePath();
@@ -126,8 +127,8 @@ class ResourceAccessor
      */
     public function delete(): void
     {
-        if ($this->disk->exists($this->path)) {
-            $this->disk->delete($this->path);
+        if ($this->getDisk()->exists($this->path)) {
+            $this->getDisk()->delete($this->path);
         }
     }
 
@@ -152,7 +153,7 @@ class ResourceAccessor
      */
     public function getSize(): ?int
     {
-        return $this->isCached() ? $this->disk->size($this->path) : null;
+        return $this->isCached() ? $this->getDisk()->size($this->path) : null;
     }
 
     /**
@@ -160,7 +161,7 @@ class ResourceAccessor
      */
     public function isCached(): bool
     {
-        return $this->disk->exists($this->path);
+        return $this->getDisk()->exists($this->path);
     }
 
     /**
@@ -179,7 +180,7 @@ class ResourceAccessor
         if (!$this->isCached()) {
             throw new RuntimeException('Resource is not cached.');
         }
-        $this->resourceCache = $this->parse($this->disk->get($this->path));
+        $this->resourceCache = $this->parse($this->getDisk()->get($this->path));
     }
 
     /**
@@ -190,7 +191,8 @@ class ResourceAccessor
         if (!$this->isLoaded()) {
             throw new RuntimeException('Resource cache is not set.');
         }
-        $this->disk->put($this->path, $this->unparse($this->resourceCache));
+        $contents = $this->unparse($this->resourceCache);
+        $this->getDisk()->put($this->path, $contents);
     }
 
     /**
@@ -202,9 +204,26 @@ class ResourceAccessor
     }
 
     /**
+     * Get the lazy-loaded filesystem instance.
+     */
+    protected function getDisk(): Filesystem
+    {
+        $this->disk ??= $this->makeDisk();
+        return $this->disk;
+    }
+
+    /**
+     * Create a filesystem instance for the current context.
+     */
+    protected function makeDisk(): Filesystem
+    {
+        return Storage::build(config('roa.cache'));
+    }
+
+    /**
      * Create a model compiler instance for the current context.
      */
-    public function makeModelCompiler(): ModelCompiler
+    protected function makeModelCompiler(): ModelCompiler
     {
         return new ModelCompiler($this->model);
     }
@@ -212,7 +231,7 @@ class ResourceAccessor
     /**
      * Create a cache file path for the current context.
      */
-    public function makePath(): string
+    protected function makePath(): string
     {
         return "{$this->name}.cache";
     }
@@ -220,7 +239,7 @@ class ResourceAccessor
     /**
      * Create a resource parser instance for the current context.
      */
-    public function makeResourceParser(): ResourceParser
+    protected function makeResourceParser(): ResourceParser
     {
         return new ResourceParser();
     }
