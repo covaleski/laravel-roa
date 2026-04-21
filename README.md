@@ -1,8 +1,11 @@
 # Laravel Resource-Oriented Architecture Utility
 
 This package provides utilities for building Laravel applications based on a
-resource-oriented approach. It caches information from your Eloquent models for
-fast access during routing and other operations.
+[resource-oriented](https://en.wikipedia.org/wiki/Resource-oriented_architecture)
+approach.
+
+It maps and caches information from your application's Eloquent models for
+quick use with the `Resource` facade.
 
 ## Installation
 
@@ -14,15 +17,20 @@ composer require covaleski/laravel-roa
 
 ## Usage
 
-### Accessing Mapped Resources
+All the package features can be accessed through the `Resource` facade, which
+proxies a `ResourceMap` singleton registered by the package's service provider.
 
-By default, all models from `app/Models` are mapped and compiled to resource
-cache files that can be loaded as a resource objects on demand using the
-`Resource` facade.
+### Accessing Mapped Models
 
-The following example creates a simple JSON GET route for each model:
+By default, all models in the `app/Models` directory are automatically mapped
+and cached. As soon as you install this package, you should be able to access
+cached information on them with the `Resource` facade.
+
+The example below adds a simple JSON GET route for each mapped model:
 
 ```php
+// routes/web.php
+
 use Covaleski\LaravelRoa\Facades\Resource;
 use Illuminate\Support\Facades\Route;
 
@@ -34,21 +42,50 @@ Resource::each(function ($resource) {
 });
 ```
 
-Resources store the following data from models:
+You can list all mapped models along with their cache status using the
+`resource:list` command:
 
-- Resource name (generated);
-- Model class name;
-- Relationships;
-- Custom resource attributes (see below).
+```sh
+php artisan resource:list
+```
 
-### Resource Attributes
+### Cached Information
 
-All model attributes that implement the `ResourceAttributeInterface` are
-automatically added to the resource object, serving as additional metadata
-when accessing cached resources.
+The `ResourceMap` object - proxied by the `Resource` facade - provides access to
+`ResourceAccessor` instances along with information on the map itself.
 
-The following example uses attributes to store model validation rules directly
-into the model's metadata:
+Each `ResourceAccessor` instance provides optimized access to cached data,
+loading cache files only [when necessary](#cache-behavior). The following
+data is available on each compiled resource through the accessor:
+
+| Property | Stored at | Description |
+| --- | --- | --- |
+| `name` | Resource map | Resource kebab-case unique name (e.g. "books"). |
+| `model` | Resource map | Eloquent model's fully qualified class name. |
+| `relationships` | Cache file | Found Eloquent relationships in the model. |
+| `attributes` | Cache file | [Custom resource attributes](#custom-attributes). |
+
+> ⚠️ **Note on relationships:**
+>
+> You must provide minimal type-hint information on Eloquent relationship
+> methods or else the compiler won't be able to identify it as so. Can use
+> native type declarations or PHPDoc `@return` tags.
+
+To see what output the compiler is providing for a specific resource, use the
+`resource:show` command:
+
+```sh
+php artisan resource:show books
+```
+
+### Custom Attributes
+
+Along with default model information, model class attributes that implement the
+`ResourceAttributeInterface` are also read and cached, serving as additional
+resource metadata.
+
+The example below uses custom attributes to store Laravel validation rules as
+model metadata for further use in simple JSON POST routes:
 
 ```php
 // app/Attributes/Ruleset.php
@@ -114,58 +151,63 @@ Resource::each(function ($resource) {
 
 ## Cache Behavior
 
-### Lazy Loading
+By default, cached data is only compiled and loaded when necessary. You can
+optimize this behavior using the `resource:cache` command so no compilation
+is needed the first time a cache file is required during a request:
 
-Resource cache data is lazy-loaded, meaning basic information such as the
-resource name, model class and cache status are available without the need
-to read or parse any cached data. When more complex data - like attributes
-and relationships - is accessed, the cache file is then read:
+```sh
+php artisan resource:cache
+```
+
+When cache files are outdated, use the `resource:clear` command to wipe cache
+data from storage:
+
+```sh
+php artisan resource:clear
+```
+
+Basic information such as the resource's name, model class and cache status are
+available without the need to read or parse any cached data. When more complex
+data is accessed (such as relationships or custom attributes), the cache file is
+then read:
 
 ```php
 use Covaleski\LaravelRoa\Facades\Resource;
 
-// No cache data will be loaded for the following code.
+// Won't require loading the cache file
 $resource = Resource::get('flights');
 echo "The '{$resource->name}' resource points to the {$resource->model} model.";
 echo PHP_EOL;
 
-// The 'flights' resource cache data will be loaded by the following code.
+// Will load the 'flights' resource cache file
 $relationships = count($resource->relationships);
 echo "The '{$resource->name}' has {$relationships} relationships.";
 echo PHP_EOL;
 ```
 
-### Dynamic Compilation
-
-By default, models are compiled to resource cache files on demand, meaning the
-first loading operation of a model that is not yet compiled will be slower than
-the subsequent ones.
-
-You can use the `resource:cache` command to compile and cache the resource map
-and all mapped models at once.
+Off course, once the cache file is read and loaded into memory, no further file
+reading is required for that resource.
 
 ## Configuration
 
-Publish the `roa.php` configuration file to customize the package behavior:
+Publish the `roa.php` configuration file to customize package behavior:
 
 ```sh
 php artisan vendor:publish --tag=laravel-roa-config
 ```
 
-The following directives are available in `config/roa.php`:
+The following directives are available in the `config/roa.php` file:
 
 | Key | Description |
 | --- | --- |
-| `cache` | Where to store resource cache files. |
-| `directories` | Where to find models. |
+| `cache` | Storage configuration for cache files. |
+| `directories` | Directories to search for Eloquent model. |
 
-## Commands
+## Motivation
 
-The following commands are available for resource maintenance:
+I made this package primarily for myself since models end up being the center
+of my Laravel applications logic. It's a way of modularizing generalization
+logic I used to copy/paste or rewrite for different purposes and also a way of
+sharing code that is useful to me.
 
-| Command | Description |
-| --- | --- |
-| `resource:cache` | Update mapped models and cache all resources. |
-| `resource:clear` | Clear mapped models and currently cached resources. |
-| `resource:list` | List all currently mapped models. |
-| `resource:show {resource}` | Show details of the specified resource. |
+The next development steps are documented in the [TODO.md](./TODO.md) file.
