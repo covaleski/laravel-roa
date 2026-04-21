@@ -65,11 +65,11 @@ data is available on each compiled resource through the accessor:
 | `relationships` | Cache file | Found Eloquent relationships in the model. |
 | `attributes` | Cache file | [Custom resource attributes](#custom-attributes). |
 
-> ⚠️ **Note on relationships:**
+> **Note on relationships:**
 >
 > You must provide minimal type-hint information on Eloquent relationship
-> methods or else the compiler won't be able to identify it as so. Can use
-> native type declarations or PHPDoc `@return` tags.
+> methods or else the compiler won't be able to identify it as so. Both native
+> PHP type declarations or PHPDoc `@return` tags are supported.
 
 To see what output the compiler is providing for a specific resource, use the
 `resource:show` command:
