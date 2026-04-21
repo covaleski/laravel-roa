@@ -34,6 +34,13 @@ Resource::each(function ($resource) {
 });
 ```
 
+Resources store the following data from models:
+
+- Resource name (generated);
+- Model class name;
+- Relationships;
+- Custom resource attributes (see below).
+
 ### Resource Attributes
 
 All model attributes that implement the `ResourceAttributeInterface` are
