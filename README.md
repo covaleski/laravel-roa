@@ -1,4 +1,4 @@
-# Laravel Resource-Oriented Architecture
+# Laravel Resource-Oriented Architecture Utility
 
 This package provides utilities for building Laravel applications based on a
 resource-oriented approach. It caches information from your Eloquent models for
@@ -104,6 +104,38 @@ Resource::each(function ($resource) {
     );
 });
 ```
+
+## Cache Behavior
+
+### Lazy Loading
+
+Resource cache data is lazy-loaded, meaning basic information such as the
+resource name, model class and cache status are available without the need
+to read or parse any cached data. When more complex data - like attributes
+and relationships - is accessed, the cache file is then read:
+
+```php
+use Covaleski\LaravelRoa\Facades\Resource;
+
+// No cache data will be loaded for the following code.
+$resource = Resource::get('flights');
+echo "The '{$resource->name}' resource points to the {$resource->model} model.";
+echo PHP_EOL;
+
+// The 'flights' resource cache data will be loaded by the following code.
+$relationships = count($resource->relationships);
+echo "The '{$resource->name}' has {$relationships} relationships.";
+echo PHP_EOL;
+```
+
+### Dynamic Compilation
+
+By default, models are compiled to resource cache files on demand, meaning the
+first loading operation of a model that is not yet compiled will be slower than
+the subsequent ones.
+
+You can use the `resource:cache` command to compile and cache the resource map
+and all mapped models at once.
 
 ## Configuration
 

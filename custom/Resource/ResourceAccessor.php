@@ -172,7 +172,7 @@ class ResourceAccessor
     }
 
     /**
-     * Load map resource cache data from storage.
+     * Load resource cache data from storage.
      */
     public function load(): void
     {
