@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void clear() Clear map data from memory and storage.
  * @method static void compile() Compile map data to memory.
  * @method static void delete() Delete map data from storage.
- * @method static void each(callable $callback) Execute a callback over each mapped resource.
+ * @method static void each(callable(ResourceAccessor $resource, string $name): void $callback) Execute a callback over each mapped resource.
  * @method static bool exists(string $name) Check whether a resource is mapped.
  * @method static \Covaleski\LaravelRoa\Resource\ResourceAccessor get(string $name) Get a resource by its name.
  * @method static bool isCached() Check whether map data is in storage.
