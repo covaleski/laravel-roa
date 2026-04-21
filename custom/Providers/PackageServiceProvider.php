@@ -49,6 +49,11 @@ class PackageServiceProvider extends ServiceProvider
                 Commands\Resource\ListCommand::class,
                 Commands\Resource\ShowCommand::class,
             ]);
+            $this->optimizes(
+                optimize: 'resource:cache',
+                clear: 'resource:clear',
+                key: 'laravel-roa:resources',
+            );
         }
         Storage::macro('root', function () {
             return Storage::build([
