@@ -1,0 +1,36 @@
+laravel: '@testbench'
+
+env:
+  - APP_DEBUG=true
+  - APP_KEY=AckfSECXIvnK5r28GVIWUAxmbBSjTsmF
+
+providers:
+  - Workbench\App\Providers\WorkbenchServiceProvider
+  - Covaleski\LaravelRoa\Providers\PackageServiceProvider
+
+migrations:
+  - workbench/database/migrations
+
+seeders:
+  - Workbench\Database\Seeders\DatabaseSeeder
+
+workbench:
+  start: '/'
+  install: true
+  health: false
+  discovers:
+    api: true
+    factories: true
+    config: true
+    web: true
+  build:
+    - asset-publish
+    - create-sqlite-db
+    - db-wipe
+    - migrate-fresh
+  assets:
+    - laravel-assets
+  sync:
+    - from: storage
+      to: workbench/storage
+      reverse: true

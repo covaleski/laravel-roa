@@ -27,7 +27,7 @@ return [
     */
 
     'directories' => [
-        'app/Models',
+        app_path('Models'),
     ],
 
 ];

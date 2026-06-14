@@ -1,0 +1,270 @@
+<?php
+
+namespace Covaleski\LaravelRoa\Resource;
+
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use RuntimeException;
+
+/**
+ * @property array<int, \Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface> $attributes Attributes.
+ * @property class-string<\Illuminate\Database\Eloquent\Model> $model Model that originated the resource.
+ * @property string $name Resource unique snake-case name.
+ * @method ?\Covaleski\LaravelRoa\Resource\TAttribute getAttribute(string $type) Get the first attribute of the specified class name.
+ * @method array<int, \Covaleski\LaravelRoa\Resource\TAttribute> getAttributes(string $type) Get all attributes of the specified class name.
+ *
+ * @uses Covaleski\LaravelRoa\Resource\ResourceCache to proxy its members.
+ */
+class ResourceAccessor
+{
+    /**
+     * Filesystem disk instance.
+     */
+    protected Filesystem $disk;
+
+    /**
+     * Model compiler.
+     */
+    protected ModelCompiler $modelCompiler;
+
+    /**
+     * Resource cache file path.
+     */
+    protected string $path;
+
+    /**
+     * Resource cache.
+     */
+    protected ResourceCache $resourceCache;
+
+    /**
+     * Resource parser.
+     */
+    protected ResourceParser $resourceParser;
+
+    /**
+     * Invoke an inaccessible method.
+     */
+    public function __call(string $name, array $arguments)
+    {
+        return call_user_func_array([$this->get(), $name], $arguments);
+    }
+
+    /**
+     * Create the resource accessor instance.
+     *
+     * @param class-string<Model> $model
+     */
+    public function __construct(
+        /**
+         * Resource name.
+         */
+        public string $name,
+
+        /**
+         * Model class name.
+         *
+         * @var class-string<Model>
+         */
+        public string $model,
+    ) {
+        $this->modelCompiler = $this->makeModelCompiler();
+        $this->path = $this->makePath();
+        $this->resourceParser = $this->makeResourceParser();
+    }
+
+    /**
+     * Read data from an inaccessible property.
+     */
+    public function __get(string $name)
+    {
+        return $this->get()->$name;
+    }
+
+    /**
+     * Set data to an inaccessible property.
+     */
+    public function __set(string $name, mixed $value)
+    {
+        $this->get()->$name = $value;
+    }
+
+    /**
+     * Ensure resource cache data is in storage.
+     *
+     * If not in memory, also compiles the resource cache.
+     */
+    public function cache(): void
+    {
+        if (!$this->isCached()) {
+            if (!$this->isLoaded()) {
+                $this->compile();
+            }
+            $this->save();
+        }
+    }
+
+    /**
+     * Clear resource cache data from memory and storage.
+     */
+    public function clear(): void
+    {
+        $this->unload();
+        $this->delete();
+    }
+
+    /**
+     * Compile resource cache data to memory.
+     */
+    public function compile(): void
+    {
+        $this->resourceCache = $this->modelCompiler->compile();
+    }
+
+    /**
+     * Delete resource cache data from storage.
+     */
+    public function delete(): void
+    {
+        if ($this->getDisk()->exists($this->path)) {
+            $this->getDisk()->delete($this->path);
+        }
+    }
+
+    /**
+     * Get the resource cache.
+     *
+     * If not cached in memory, loads the resource cache file.
+     *
+     * If the not cached in storage, compiles the resource cache.
+     */
+    public function get(): ResourceCache
+    {
+        if (!$this->isLoaded()) {
+            $this->cache();
+            $this->load();
+        }
+        return $this->resourceCache;
+    }
+
+    /**
+     * Get the resource cache data file size in storage.
+     */
+    public function getSize(): ?int
+    {
+        return $this->isCached() ? $this->getDisk()->size($this->path) : null;
+    }
+
+    /**
+     * Get the resource cache file's last modified timestamp in storage.
+     */
+    public function getTimestamp(): ?int
+    {
+        return $this->isCached() ? $this->getDisk()->lastModified($this->path) : null;
+    }
+
+    /**
+     * Check whether resource cache data is in storage.
+     */
+    public function isCached(): bool
+    {
+        return $this->getDisk()->exists($this->path);
+    }
+
+    /**
+     * Check whether resource cache data is loaded to memory.
+     */
+    public function isLoaded(): bool
+    {
+        return isset($this->resourceCache);
+    }
+
+    /**
+     * Load resource cache data from storage.
+     */
+    public function load(): void
+    {
+        if (!$this->isCached()) {
+            throw new RuntimeException('Resource is not cached.');
+        }
+        $this->resourceCache = $this->parse($this->getDisk()->get($this->path));
+    }
+
+    /**
+     * Save resource cache data from memory to storage.
+     */
+    public function save(): void
+    {
+        if (!$this->isLoaded()) {
+            throw new RuntimeException('Resource cache is not set.');
+        }
+        $contents = $this->unparse($this->resourceCache);
+        $this->getDisk()->put($this->path, $contents);
+    }
+
+    /**
+     * Clear resource cache data from memory.
+     */
+    public function unload(): void
+    {
+        unset($this->resourceCache);
+    }
+
+    /**
+     * Get the lazy-loaded filesystem instance.
+     */
+    protected function getDisk(): Filesystem
+    {
+        $this->disk ??= $this->makeDisk();
+        return $this->disk;
+    }
+
+    /**
+     * Create a filesystem instance for the current context.
+     */
+    protected function makeDisk(): Filesystem
+    {
+        return Storage::build(config('roa.cache'));
+    }
+
+    /**
+     * Create a model compiler instance for the current context.
+     */
+    protected function makeModelCompiler(): ModelCompiler
+    {
+        return new ModelCompiler($this->model);
+    }
+
+    /**
+     * Create a cache file path for the current context.
+     */
+    protected function makePath(): string
+    {
+        return "{$this->name}.cache";
+    }
+
+    /**
+     * Create a resource parser instance for the current context.
+     */
+    protected function makeResourceParser(): ResourceParser
+    {
+        return new ResourceParser();
+    }
+
+    /**
+     * Parse serialized data into a `ResourceCache` instance.
+     */
+    protected function parse(string $data): ResourceCache
+    {
+        return $this->resourceParser->parse($data);
+    }
+
+    /**
+     * Turn a `ResourceCache` instance into serialized data.
+     */
+    protected function unparse(ResourceCache $data): string
+    {
+        return $this->resourceParser->unparse($data);
+    }
+}
