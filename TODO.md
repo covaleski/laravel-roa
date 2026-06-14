@@ -2,6 +2,6 @@
 (A) Read model relationships +Compiler {cm:2026-04-19}
 (B) Allow extending the resource cache object +Compiler
 (C) Add eager loaded attributes +Compiler
-(A) Replace `laravel/framework` by `illuminate/*` +Package
+(A) Replace `laravel/framework` by `illuminate/*` +Package {cm:2026-06-14}
 (A) Hook optimization commands +Services {cm:2026-04-21}
-(A) Replace example app by Testbench +Tests
+(A) Replace example app by Testbench +Tests {cm:2026-06-14}
