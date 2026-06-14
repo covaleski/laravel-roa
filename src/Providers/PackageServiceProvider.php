@@ -31,6 +31,10 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->mergeConfigFrom(
+            "{$this->path}/config/roa.php",
+            'roa',
+        );
         $this->app->singleton(ResourceMap::class);
     }
 
@@ -39,10 +43,6 @@ class PackageServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->mergeConfigFrom(
-            "{$this->path}/config/roa.php",
-            'roa',
-        );
         $this->publishes(
             [
                 "{$this->path}/config/roa.php" => config_path('roa.php'),
