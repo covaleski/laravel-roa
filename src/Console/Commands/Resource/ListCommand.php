@@ -1,13 +1,13 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Console\Commands\Resource;
+namespace Covaleski\Laravel\Catalog\Console\Commands\Resource;
 
-use Covaleski\LaravelRoa\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Resource;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-use function Covaleski\LaravelRoa\format_size_units;
+use function Covaleski\Laravel\Catalog\format_size_units;
 
 #[Signature('resource:list')]
 #[Description('List all currently mapped models.')]

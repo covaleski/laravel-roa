@@ -1,8 +1,8 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Console\Commands\Resource;
+namespace Covaleski\Laravel\Catalog\Console\Commands\Resource;
 
-use Covaleski\LaravelRoa\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Resource;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;

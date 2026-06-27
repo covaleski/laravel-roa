@@ -1,9 +1,9 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Resource;
+namespace Covaleski\Laravel\Catalog\Resource;
 
-use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
-use Covaleski\LaravelRoa\Resource\Relationship;
+use Covaleski\Laravel\Catalog\Interfaces\ResourceAttributeInterface;
+use Covaleski\Laravel\Catalog\Resource\Relationship;
 use Illuminate\Database\Eloquent\Model;
 
 class ResourceCache

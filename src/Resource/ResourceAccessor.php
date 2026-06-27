@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Resource;
+namespace Covaleski\Laravel\Catalog\Resource;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
@@ -8,13 +8,13 @@ use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 /**
- * @property array<int, \Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface> $attributes Attributes.
+ * @property array<int, \Covaleski\Laravel\Catalog\Interfaces\ResourceAttributeInterface> $attributes Attributes.
  * @property class-string<\Illuminate\Database\Eloquent\Model> $model Model that originated the resource.
  * @property string $name Resource unique snake-case name.
- * @method ?\Covaleski\LaravelRoa\Resource\TAttribute getAttribute(string $type) Get the first attribute of the specified class name.
- * @method array<int, \Covaleski\LaravelRoa\Resource\TAttribute> getAttributes(string $type) Get all attributes of the specified class name.
+ * @method ?\Covaleski\Laravel\Catalog\Resource\TAttribute getAttribute(string $type) Get the first attribute of the specified class name.
+ * @method array<int, \Covaleski\Laravel\Catalog\Resource\TAttribute> getAttributes(string $type) Get all attributes of the specified class name.
  *
- * @uses Covaleski\LaravelRoa\Resource\ResourceCache to proxy its members.
+ * @uses Covaleski\Laravel\Catalog\Resource\ResourceCache to proxy its members.
  */
 class ResourceAccessor
 {

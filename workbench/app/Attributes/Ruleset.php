@@ -3,7 +3,7 @@
 namespace Workbench\App\Attributes;
 
 use Attribute;
-use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
+use Covaleski\Laravel\Catalog\Interfaces\ResourceAttributeInterface;
 
 #[Attribute(Attribute::TARGET_CLASS|Attribute::IS_REPEATABLE)]
 class Ruleset implements ResourceAttributeInterface

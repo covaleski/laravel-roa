@@ -1,8 +1,8 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Resource;
+namespace Covaleski\Laravel\Catalog\Resource;
 
-use Covaleski\LaravelRoa\Interfaces\ResourceParserInterface;
+use Covaleski\Laravel\Catalog\Interfaces\ResourceParserInterface;
 
 class ResourceParser
 {

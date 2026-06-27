@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Resource;
+namespace Covaleski\Laravel\Catalog\Resource;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RuntimeException;
 
-use function Covaleski\LaravelRoa\file_get_classes;
+use function Covaleski\Laravel\Catalog\file_get_classes;
 use function Illuminate\Filesystem\join_paths;
 
 class ResourceMap

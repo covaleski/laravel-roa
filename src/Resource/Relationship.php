@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Resource;
+namespace Covaleski\Laravel\Catalog\Resource;
 
 class Relationship
 {

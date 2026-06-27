@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\LaravelRoa;
+namespace Covaleski\Laravel\Catalog;
 
 /**
  * Get all classes declared within the supplied PHP code.

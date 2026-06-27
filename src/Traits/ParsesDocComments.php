@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Traits;
+namespace Covaleski\Laravel\Catalog\Traits;
 
 use Illuminate\Support\Str;
 use phpDocumentor\Reflection\DocBlock;

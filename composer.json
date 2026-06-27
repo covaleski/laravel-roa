@@ -1,13 +1,15 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "covaleski/laravel-roa",
+    "name": "covaleski/catalog",
     "type": "library",
-    "description": "Resource-oriented architecture tools for the Laravel Framework.",
+    "description": "Model mapping for Laravel.",
     "keywords": [
         "laravel",
         "framework",
-        "roa",
-        "resource-oriented"
+        "caching",
+        "map",
+        "models",
+        "resources"
     ],
     "license": "MIT",
     "authors": [
@@ -38,7 +40,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Covaleski\\LaravelRoa\\": "src/"
+            "Covaleski\\Laravel\\Catalog\\": "src/"
         },
         "files": [
             "src/functions.php"
@@ -83,7 +85,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Covaleski\\LaravelRoa\\Providers\\PackageServiceProvider"
+                "Covaleski\\Laravel\\Catalog\\Providers\\PackageServiceProvider"
             ]
         }
     },

@@ -1,7 +1,7 @@
 <?php
 
 use Workbench\App\Attributes\Ruleset;
-use Covaleski\LaravelRoa\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Resource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

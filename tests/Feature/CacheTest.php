@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use Covaleski\LaravelRoa\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Resource;
 use Tests\TestCase;
 
 class CacheTest extends TestCase

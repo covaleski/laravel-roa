@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Interfaces;
+namespace Covaleski\Laravel\Catalog\Interfaces;
 
 interface ResourceAttributeInterface
 {

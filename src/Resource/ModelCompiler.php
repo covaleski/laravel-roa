@@ -1,10 +1,10 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Resource;
+namespace Covaleski\Laravel\Catalog\Resource;
 
-use Covaleski\LaravelRoa\Attributes\ResourceName;
-use Covaleski\LaravelRoa\Interfaces\ResourceAttributeInterface;
-use Covaleski\LaravelRoa\Traits\ParsesDocComments;
+use Covaleski\Laravel\Catalog\Attributes\ResourceName;
+use Covaleski\Laravel\Catalog\Interfaces\ResourceAttributeInterface;
+use Covaleski\Laravel\Catalog\Traits\ParsesDocComments;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;

@@ -1,9 +1,9 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Providers;
+namespace Covaleski\Laravel\Catalog\Providers;
 
-use Covaleski\LaravelRoa\Console\Commands;
-use Covaleski\LaravelRoa\Resource\ResourceMap;
+use Covaleski\Laravel\Catalog\Console\Commands;
+use Covaleski\Laravel\Catalog\Resource\ResourceMap;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -47,7 +47,6 @@ class PackageServiceProvider extends ServiceProvider
             [
                 "{$this->path}/config/roa.php" => config_path('roa.php'),
             ],
-            'laravel-roa',
         );
         Storage::macro('root', function () {
             return Storage::build([
@@ -74,7 +73,7 @@ class PackageServiceProvider extends ServiceProvider
         $this->optimizes(
             optimize: 'resource:cache',
             clear: 'resource:clear',
-            key: 'laravel-roa:resources',
+            key: 'covaleski/catalog',
         );
     }
 }

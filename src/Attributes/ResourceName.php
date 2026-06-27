@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\LaravelRoa\Attributes;
+namespace Covaleski\Laravel\Catalog\Attributes;
 
 use Attribute;
 

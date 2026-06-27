@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\Resource;
 
-use Covaleski\LaravelRoa\Resource\ResourceCache;
-use Covaleski\LaravelRoa\Resource\ResourceParser;
+use Covaleski\Laravel\Catalog\Resource\ResourceCache;
+use Covaleski\Laravel\Catalog\Resource\ResourceParser;
 use PHPUnit\Framework\TestCase;
 
 class ResourceParserTest extends TestCase
