@@ -26,7 +26,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @uses Covaleski\Laravel\Catalog\Resource\ResourceMap to proxy its members.
  */
-class Resource extends Facade
+class Catalog extends Facade
 {
     /**
      * Get the registered name of the component.

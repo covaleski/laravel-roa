@@ -1,8 +1,8 @@
 <?php
 
-namespace Covaleski\Laravel\Catalog\Console\Commands\Resource;
+namespace Covaleski\Laravel\Catalog\Console\Commands;
 
-use Covaleski\Laravel\Catalog\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Catalog;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
@@ -11,7 +11,7 @@ use function Covaleski\Laravel\Catalog\format_size_units;
 
 #[Signature('resource:list')]
 #[Description('List all currently mapped models.')]
-class ListCommand extends Command
+class CatalogListCommand extends Command
 {
     /**
      * Execute the console command.
@@ -19,18 +19,18 @@ class ListCommand extends Command
     public function handle()
     {
         // Output map file information
-        $size = format_size_units(Resource::getSize());
-        $timestamp = date('Y-m-d H:i:s', Resource::getTimestamp());
+        $size = format_size_units(Catalog::getSize());
+        $timestamp = date('Y-m-d H:i:s', Catalog::getTimestamp());
         $this->info('Map file:');
         $this->newLine();
-        $this->line(Resource::getFilename());
+        $this->line(Catalog::getFilename());
         $this->line("Size: {$size}");
         $this->line("Last modified: {$timestamp}");
         $this->newLine();
         // Output listed directories
         $this->info('Directories:');
         $this->newLine();
-        Resource::getDirectories()->each(fn ($dir) => $this->line($dir));
+        Catalog::getDirectories()->each(fn ($dir) => $this->line($dir));
         $this->newLine();
         // Output resource list
         $this->info('Resources:');
@@ -42,7 +42,7 @@ class ListCommand extends Command
                 'Cache Size',
                 'Last Cached',
             ],
-            collect(Resource::all())->map(fn ($resource) => [
+            collect(Catalog::all())->map(fn ($resource) => [
                 $resource->name,
                 $resource->model,
                 $resource->isCached()

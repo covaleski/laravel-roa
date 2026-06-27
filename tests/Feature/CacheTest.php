@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 
-use Covaleski\Laravel\Catalog\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Catalog;
 use Tests\TestCase;
 
 class CacheTest extends TestCase
@@ -14,15 +14,15 @@ class CacheTest extends TestCase
      */
     public function test_loads_on_demand(): void
     {
-        Resource::wipe();
-        $this->assertFalse(Resource::isCached());
-        $this->assertFalse(Resource::isLoaded());
-        Resource::each(fn ($r) => $this->assertFalse($r->isCached()));
-        Resource::each(fn ($r) => $this->assertFalse($r->isLoaded()));
-        Resource::exists('users');
-        $this->assertTrue(Resource::isCached());
-        $this->assertTrue(Resource::isLoaded());
-        foreach (Resource::all() as $resource) {
+        Catalog::wipe();
+        $this->assertFalse(Catalog::isCached());
+        $this->assertFalse(Catalog::isLoaded());
+        Catalog::each(fn ($r) => $this->assertFalse($r->isCached()));
+        Catalog::each(fn ($r) => $this->assertFalse($r->isLoaded()));
+        Catalog::exists('users');
+        $this->assertTrue(Catalog::isCached());
+        $this->assertTrue(Catalog::isLoaded());
+        foreach (Catalog::all() as $resource) {
             $this->assertFalse($resource->isLoaded());
             $this->assertFalse($resource->isCached());
             $resource->name;

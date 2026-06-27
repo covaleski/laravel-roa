@@ -1,7 +1,7 @@
 <?php
 
 use Workbench\App\Attributes\Ruleset;
-use Covaleski\Laravel\Catalog\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Catalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -9,7 +9,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Resource::each(function ($resource) {
+Catalog::each(function ($resource) {
     Route::get(
         "/api/{$resource->name}",
         fn () => response()->json($resource->model::all()),

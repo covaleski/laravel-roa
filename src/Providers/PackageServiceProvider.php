@@ -65,10 +65,10 @@ class PackageServiceProvider extends ServiceProvider
     protected function bootConsole(): void
     {
         $this->commands([
-            Commands\Resource\CacheCommand::class,
-            Commands\Resource\ClearCommand::class,
-            Commands\Resource\ListCommand::class,
-            Commands\Resource\ShowCommand::class,
+            Commands\CatalogCacheCommand::class,
+            Commands\CatalogClearCommand::class,
+            Commands\CatalogListCommand::class,
+            Commands\CatalogShowCommand::class,
         ]);
         $this->optimizes(
             optimize: 'resource:cache',

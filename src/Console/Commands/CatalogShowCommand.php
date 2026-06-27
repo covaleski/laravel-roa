@@ -1,15 +1,15 @@
 <?php
 
-namespace Covaleski\Laravel\Catalog\Console\Commands\Resource;
+namespace Covaleski\Laravel\Catalog\Console\Commands;
 
-use Covaleski\Laravel\Catalog\Facades\Resource;
+use Covaleski\Laravel\Catalog\Facades\Catalog;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
 #[Signature('resource:show {resource} {--cached}')]
 #[Description('Show details of the specified resource.')]
-class ShowCommand extends Command
+class CatalogShowCommand extends Command
 {
     /**
      * Execute the console command.
@@ -20,8 +20,8 @@ class ShowCommand extends Command
         $name = $this->argument('resource');
         $show_cache = $this->option('cached');
         // Check if resource exists
-        if (Resource::exists($name)) {
-            $accessor = Resource::get($name);
+        if (Catalog::exists($name)) {
+            $accessor = Catalog::get($name);
         } else {
             $this->warn("No resource named '{$name}'.");
             return;
