@@ -219,7 +219,10 @@ class ModelAccessor
      */
     protected function makeDisk(): Filesystem
     {
-        return Storage::build(config('roa.cache'));
+        return Storage::build(config('catalog.cache', [
+            'driver' => 'local',
+            'root' => storage_path('models'),
+        ]));
     }
 
     /**

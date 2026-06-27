@@ -32,8 +32,8 @@ class PackageServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            "{$this->path}/config/roa.php",
-            'roa',
+            "{$this->path}/config/catalog.php",
+            'catalog',
         );
         $this->app->singleton(ModelMap::class);
     }
@@ -45,15 +45,9 @@ class PackageServiceProvider extends ServiceProvider
     {
         $this->publishes(
             [
-                "{$this->path}/config/roa.php" => config_path('roa.php'),
+                "{$this->path}/config/catalog.php" => config_path('catalog.php'),
             ],
         );
-        Storage::macro('root', function () {
-            return Storage::build([
-                'driver' => 'local',
-                'root' => base_path(),
-            ]);
-        });
         if ($this->app->runningInConsole()) {
             $this->bootConsole();
         }
@@ -73,7 +67,7 @@ class PackageServiceProvider extends ServiceProvider
         $this->optimizes(
             optimize: 'catalog:cache',
             clear: 'catalog:clear',
-            key: 'covaleski/catalog',
+            key: 'models',
         );
     }
 }

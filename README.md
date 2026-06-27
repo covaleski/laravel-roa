@@ -7,7 +7,7 @@ Model mapping for Laravel.
 Install this package using the Composer package manager:
 
 ```sh
-composer require covaleski/laravel-roa
+composer require covaleski/catalog
 ```
 
 ## Usage

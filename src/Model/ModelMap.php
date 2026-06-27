@@ -148,7 +148,7 @@ class ModelMap
      */
     public function getDirectories(): Collection
     {
-        return collect(config('roa.directories', []));
+        return collect(config('catalog.directories', []));
     }
 
     /**
@@ -259,7 +259,10 @@ class ModelMap
      */
     protected function makeCacheDisk(): Filesystem
     {
-        return Storage::build(config('roa.cache'));
+        return Storage::build(config('catalog.cache', [
+            'driver' => 'local',
+            'root' => storage_path('models'),
+        ]));
     }
 
     /**
