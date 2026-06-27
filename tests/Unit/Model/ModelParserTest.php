@@ -16,7 +16,6 @@ class ModelParserTest extends TestCase
         $parser = new ModelParser();
         $model = new ModelCache();
         $model->model = 'Foo\\Bar';
-        $model->name = 'bars';
         $model->attributes = [];
         $model->relationships = [];
         $parsed = $parser->unparse($model);

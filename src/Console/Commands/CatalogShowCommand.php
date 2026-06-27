@@ -17,17 +17,17 @@ class CatalogShowCommand extends Command
     public function handle()
     {
         // Get arguments
-        $name = $this->argument('model');
+        $class_name = $this->argument('model');
         $show_cache = $this->option('cached');
         // Check if model exists
-        if (Catalog::exists($name)) {
-            $accessor = Catalog::get($name);
+        if (Catalog::exists($class_name)) {
+            $accessor = Catalog::get($class_name);
         } else {
-            $this->warn("No model named '{$name}'.");
+            $this->warn("No model named '{$class_name}'.");
             return;
         }
         // Get data
-        $this->info("Retrieving '{$name}' model...");
+        $this->info("Retrieving '{$class_name}' model...");
         if ($show_cache) {
             $this->line('Retrieving cached data...');
             if (!$accessor->isCached()) {

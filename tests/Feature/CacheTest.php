@@ -25,7 +25,7 @@ class CacheTest extends TestCase
         foreach (Catalog::all() as $model) {
             $this->assertFalse($model->isLoaded());
             $this->assertFalse($model->isCached());
-            $model->name;
+            $model->model;
             $this->assertFalse($model->isLoaded());
             $this->assertFalse($model->isCached());
             $model->relationships;

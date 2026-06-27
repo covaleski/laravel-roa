@@ -10,7 +10,6 @@ use RuntimeException;
 /**
  * @property array<int, \Covaleski\Laravel\Catalog\Interfaces\ModelAttributeInterface> $attributes Attributes.
  * @property class-string<\Illuminate\Database\Eloquent\Model> $model Model class name.
- * @property string $name Model cache unique snake-case name.
  * @method ?\Covaleski\Laravel\Catalog\Model\TAttribute getAttribute(string $type) Get the first attribute of the specified class name.
  * @method array<int, \Covaleski\Laravel\Catalog\Model\TAttribute> getAttributes(string $type) Get all attributes of the specified class name.
  *
@@ -57,11 +56,6 @@ class ModelAccessor
      * @param class-string<Model> $model
      */
     public function __construct(
-        /**
-         * Model cache unique snake-case name.
-         */
-        public string $name,
-
         /**
          * Model class name.
          *
@@ -241,7 +235,10 @@ class ModelAccessor
      */
     protected function makePath(): string
     {
-        return "{$this->name}.cache";
+        return str($this->model)
+            ->explode('\\')
+            ->map(fn ($value) => str($value)->kebab()->toString())
+            ->join('+') . '.cache';
     }
 
     /**

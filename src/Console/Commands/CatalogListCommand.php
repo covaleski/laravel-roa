@@ -37,13 +37,11 @@ class CatalogListCommand extends Command
         $this->newLine();
         $this->table(
             [
-                'Name',
                 'Model',
                 'Cache Size',
                 'Last Cached',
             ],
             collect(Catalog::all())->map(fn ($model) => [
-                $model->name,
                 $model->model,
                 $model->isCached()
                     ? format_size_units($model->getSize())

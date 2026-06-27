@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static void clear() Clear map data from memory and storage.
  * @method static void compile() Compile map data to memory.
  * @method static void delete() Delete map data from storage.
- * @method static void each(callable(\Covaleski\Laravel\Catalog\Model\ModelAccessor $model, string $name): void $callback) Execute a callback over each mapped model.
- * @method static bool exists(string $name) Check whether a model is mapped.
- * @method static \Covaleski\Laravel\Catalog\Model\ModelAccessor get(string $name) Get a model by its cache name.
+ * @method static void each(callable(\Covaleski\Laravel\Catalog\Model\ModelAccessor $model): void $callback) Execute a callback over each mapped model.
+ * @method static bool exists(string $model) Check whether a model is mapped.
+ * @method static \Covaleski\Laravel\Catalog\Model\ModelAccessor get(string $model) Get a model by its cache name.
  * @method static \Illuminate\Support\Collection<int, string> getDirectories() Get mapped directories.
  * @method static string getFilename() Get the map cache file's filename.
  * @method static int getSize() Get the map cache file's size.

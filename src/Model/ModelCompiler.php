@@ -2,7 +2,6 @@
 
 namespace Covaleski\Laravel\Catalog\Model;
 
-use Covaleski\Laravel\Catalog\Attributes\CacheName;
 use Covaleski\Laravel\Catalog\Interfaces\ModelAttributeInterface;
 use Covaleski\Laravel\Catalog\Traits\ParsesDocComments;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +48,6 @@ class ModelCompiler
     {
         $this->initialize();
         $model = new ModelCache();
-        $model->name = $this->compileName();
         $model->model = $this->model;
         $model->attributes = $this->compileAttributes();
         $model->relationships = $this->compileRelationships();
@@ -78,11 +76,7 @@ class ModelCompiler
      */
     public function compileName(): string
     {
-        $this->initialize();
-        $attributes = $this->reflection->getAttributes(CacheName::class);
-        return isset($attributes[0])
-            ? $attributes[0]->newInstance()->name
-            : Str::plural(Str::kebab(class_basename($this->model)));
+        return Str::plural(Str::kebab(class_basename($this->model)));
     }
 
     /**
@@ -95,7 +89,6 @@ class ModelCompiler
         return new Relationship(
             relation: $relation::class,
             model: $related::class,
-            name: (new ModelCompiler($related::class))->compileName(),
         );
     }
 

@@ -10,19 +10,14 @@ Route::get('/', function () {
 });
 
 Catalog::each(function ($model) {
-    Route::get(
-        "/api/{$model->name}",
-        fn () => response()->json($model->model::all()),
-    );
-    Route::post(
-        "/api/{$model->name}",
-        function (Request $request) use ($model) {
-            $attributes = $model->getAttributes(Ruleset::class);
-            $rules = collect($attributes)->pluck('rules', 'attribute')->all();
-            $values = $request->validate($rules);
-            $model = new $model->model;
-            $model->fill($values)->save();
-            return response()->json($model, 201);
-        },
-    );
+    $uri = '/api/' . str($model->model)->classBasename()->kebab()->plural();
+    Route::get($uri, fn () => response()->json($model->model::all()));
+    Route::post($uri, function (Request $request) use ($model) {
+        $attributes = $model->getAttributes(Ruleset::class);
+        $rules = collect($attributes)->pluck('rules', 'attribute')->all();
+        $values = $request->validate($rules);
+        $model = new $model->model;
+        $model->fill($values)->save();
+        return response()->json($model, 201);
+    });
 });

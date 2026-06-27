@@ -108,12 +108,12 @@ class ModelMap
     /**
      * Execute a callback over each mapped model.
      *
-     * @param callable(ModelAccessor $model, string $name): void $callback
+     * @param callable(ModelAccessor $model): void $callback
      */
     public function each(callable $callback): void
     {
-        foreach ($this->all() as $name => $model) {
-            if ($callback($model, $name) === false) {
+        foreach ($this->all() as $model) {
+            if ($callback($model) === false) {
                 break;
             }
         }
@@ -122,26 +122,23 @@ class ModelMap
     /**
      * Check whether a model is mapped.
      */
-    public function exists(string $name): bool
+    public function exists(string $model): bool
     {
         $this->ensureMap();
-        return isset($this->map[$name]);
+        return isset($this->map[$model]);
     }
 
     /**
      * Get a model by its cache name.
      */
-    public function get(string $name): ModelAccessor
+    public function get(string $model): ModelAccessor
     {
-        if (!$this->exists($name)) {
-            $message = "No model is mapped as '{$name}'";
+        if (!$this->exists($model)) {
+            $message = "Model '{$model}' is not mapped";
             throw new InvalidArgumentException($message);
         }
-        $this->modelAccessors[$name] ??= new ModelAccessor(
-            $name,
-            $this->map[$name],
-        );
-        return $this->modelAccessors[$name];
+        $this->modelAccessors[$model] ??= new ModelAccessor($model);
+        return $this->modelAccessors[$model];
     }
 
     /**
@@ -302,7 +299,7 @@ class ModelMap
     {
         return collect(file_get_classes($code))
             ->filter(fn ($class_name) => is_a($class_name, Model::class, true))
-            ->keyBy(fn ($class_name) => $this->compileName($class_name))
+            ->values()
             ->toArray();
     }
 
@@ -324,11 +321,13 @@ class ModelMap
     /**
      * Create a map for models in the specified PHP file.
      *
-     * @return array<string, class-string<Model>>
+     * @return array<class-string<Model>, string>
      */
     protected function mapFile(string $filename): array
     {
-        return $this->mapCode(file_get_contents($filename));
+        return collect($this->mapCode(file_get_contents($filename)))
+            ->mapWithKeys(fn ($class_name) => [$class_name => $filename])
+            ->toArray();
     }
 
     /**

@@ -17,11 +17,6 @@ class Relationship
          * Related model class name.
          */
         public string $model,
-
-        /**
-         * Related model cache name.
-         */
-        public string $name,
     ) {
         //
     }

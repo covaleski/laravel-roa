@@ -23,11 +23,6 @@ class ModelCache
     public string $model;
 
     /**
-     * Model cache unique snake-case name.
-     */
-    public string $name;
-
-    /**
      * Related models.
      *
      * @var array<string, Relationship>
