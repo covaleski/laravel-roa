@@ -7,13 +7,13 @@ return [
     | Cache
     |--------------------------------------------------------------------------
     |
-    | This option defines where resource cache files will be stored.
+    | This option defines where model cache files will be stored.
     |
     */
 
     'cache' => [
         'driver' => 'local',
-        'root' => storage_path('resources'),
+        'root' => storage_path('models'),
     ],
 
     /*
@@ -21,8 +21,7 @@ return [
     | Directories
     |--------------------------------------------------------------------------
     |
-    | This option defines which directories will be searched to find models
-    | that can be compiled into resources.
+    | This option defines which directories to search for models.
     |
     */
 

@@ -22,15 +22,15 @@ class CacheTest extends TestCase
         Catalog::exists('users');
         $this->assertTrue(Catalog::isCached());
         $this->assertTrue(Catalog::isLoaded());
-        foreach (Catalog::all() as $resource) {
-            $this->assertFalse($resource->isLoaded());
-            $this->assertFalse($resource->isCached());
-            $resource->name;
-            $this->assertFalse($resource->isLoaded());
-            $this->assertFalse($resource->isCached());
-            $resource->relationships;
-            $this->assertTrue($resource->isLoaded());
-            $this->assertTrue($resource->isCached());
+        foreach (Catalog::all() as $model) {
+            $this->assertFalse($model->isLoaded());
+            $this->assertFalse($model->isCached());
+            $model->name;
+            $this->assertFalse($model->isLoaded());
+            $this->assertFalse($model->isCached());
+            $model->relationships;
+            $this->assertTrue($model->isLoaded());
+            $this->assertTrue($model->isCached());
         }
     }
 }

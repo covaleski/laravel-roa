@@ -1,29 +1,29 @@
 <?php
 
-namespace Covaleski\Laravel\Catalog\Resource;
+namespace Covaleski\Laravel\Catalog\Model;
 
-use Covaleski\Laravel\Catalog\Interfaces\ResourceAttributeInterface;
-use Covaleski\Laravel\Catalog\Resource\Relationship;
+use Covaleski\Laravel\Catalog\Interfaces\ModelAttributeInterface;
+use Covaleski\Laravel\Catalog\Model\Relationship;
 use Illuminate\Database\Eloquent\Model;
 
-class ResourceCache
+class ModelCache
 {
     /**
      * Attributes.
      *
-     * @var array<int, ResourceAttributeInterface>
+     * @var array<int, ModelAttributeInterface>
      */
     public array $attributes;
 
     /**
-     * Model that originated the resource.
+     * Model class name.
      *
      * @var class-string<Model>
      */
     public string $model;
 
     /**
-     * Resource unique snake-case name.
+     * Model cache unique snake-case name.
      */
     public string $name;
 
@@ -37,11 +37,11 @@ class ResourceCache
     /**
      * Get the first attribute of the specified class name.
      *
-     * @template TAttribute of ResourceAttributeInterface
+     * @template TAttribute of ModelAttributeInterface
      * @param class-string<TAttribute> $type
      * @return ?TAttribute
      */
-    public function getAttribute(string $type): ?ResourceAttributeInterface
+    public function getAttribute(string $type): ?ModelAttributeInterface
     {
         foreach ($this->attributes as $attribute) {
             if (is_a($attribute, $type)) {
@@ -54,7 +54,7 @@ class ResourceCache
     /**
      * Get all attributes of the specified class name.
      *
-     * @template TAttribute of ResourceAttributeInterface
+     * @template TAttribute of ModelAttributeInterface
      * @param class-string<TAttribute> $type
      * @return array<int, TAttribute>
      */

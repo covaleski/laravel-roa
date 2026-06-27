@@ -3,7 +3,7 @@
 namespace Covaleski\Laravel\Catalog\Providers;
 
 use Covaleski\Laravel\Catalog\Console\Commands;
-use Covaleski\Laravel\Catalog\Resource\ResourceMap;
+use Covaleski\Laravel\Catalog\Model\ModelMap;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -35,7 +35,7 @@ class PackageServiceProvider extends ServiceProvider
             "{$this->path}/config/roa.php",
             'roa',
         );
-        $this->app->singleton(ResourceMap::class);
+        $this->app->singleton(ModelMap::class);
     }
 
     /**

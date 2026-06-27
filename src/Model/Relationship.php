@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\Laravel\Catalog\Resource;
+namespace Covaleski\Laravel\Catalog\Model;
 
 class Relationship
 {
@@ -19,9 +19,9 @@ class Relationship
         public string $model,
 
         /**
-         * Related resource name.
+         * Related model cache name.
          */
-        public string $resource,
+        public string $name,
     ) {
         //
     }

@@ -9,18 +9,18 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Catalog::each(function ($resource) {
+Catalog::each(function ($model) {
     Route::get(
-        "/api/{$resource->name}",
-        fn () => response()->json($resource->model::all()),
+        "/api/{$model->name}",
+        fn () => response()->json($model->model::all()),
     );
     Route::post(
-        "/api/{$resource->name}",
-        function (Request $request) use ($resource) {
-            $attributes = $resource->getAttributes(Ruleset::class);
+        "/api/{$model->name}",
+        function (Request $request) use ($model) {
+            $attributes = $model->getAttributes(Ruleset::class);
             $rules = collect($attributes)->pluck('rules', 'attribute')->all();
             $values = $request->validate($rules);
-            $model = new $resource->model;
+            $model = new $model->model;
             $model->fill($values)->save();
             return response()->json($model, 201);
         },

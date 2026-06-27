@@ -2,7 +2,7 @@
 
 namespace Covaleski\Laravel\Catalog\Interfaces;
 
-interface ResourceAttributeInterface
+interface ModelAttributeInterface
 {
     //
 }

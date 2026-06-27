@@ -7,8 +7,8 @@ use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('catalog:show {resource} {--cached}')]
-#[Description('Show details of the specified resource.')]
+#[Signature('catalog:show {model} {--cached}')]
+#[Description('Show details of the specified model.')]
 class CatalogShowCommand extends Command
 {
     /**
@@ -17,34 +17,34 @@ class CatalogShowCommand extends Command
     public function handle()
     {
         // Get arguments
-        $name = $this->argument('resource');
+        $name = $this->argument('model');
         $show_cache = $this->option('cached');
-        // Check if resource exists
+        // Check if model exists
         if (Catalog::exists($name)) {
             $accessor = Catalog::get($name);
         } else {
-            $this->warn("No resource named '{$name}'.");
+            $this->warn("No model named '{$name}'.");
             return;
         }
         // Get data
-        $this->info("Retrieving '{$name}' resource...");
+        $this->info("Retrieving '{$name}' model...");
         if ($show_cache) {
             $this->line('Retrieving cached data...');
             if (!$accessor->isCached()) {
-                $this->warn('Resource not cached yet.');
+                $this->warn('Model not cached yet.');
                 return;
             }
             $accessor->load();
         } else {
-            $this->line('Compiling resource...');
+            $this->line('Compiling model...');
             $accessor->compile();
 
         }
         // Show data
-        $resource = $accessor->get();
+        $model = $accessor->get();
         $flags = JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE;
         $this->newLine();
-        $this->line(json_encode($resource, $flags));
+        $this->line(json_encode($model, $flags));
         $this->newLine();
         // Show timestamp
         if ($show_cache) {

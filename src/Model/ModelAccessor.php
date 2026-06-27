@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\Laravel\Catalog\Resource;
+namespace Covaleski\Laravel\Catalog\Model;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\Storage;
 use RuntimeException;
 
 /**
- * @property array<int, \Covaleski\Laravel\Catalog\Interfaces\ResourceAttributeInterface> $attributes Attributes.
- * @property class-string<\Illuminate\Database\Eloquent\Model> $model Model that originated the resource.
- * @property string $name Resource unique snake-case name.
- * @method ?\Covaleski\Laravel\Catalog\Resource\TAttribute getAttribute(string $type) Get the first attribute of the specified class name.
- * @method array<int, \Covaleski\Laravel\Catalog\Resource\TAttribute> getAttributes(string $type) Get all attributes of the specified class name.
+ * @property array<int, \Covaleski\Laravel\Catalog\Interfaces\ModelAttributeInterface> $attributes Attributes.
+ * @property class-string<\Illuminate\Database\Eloquent\Model> $model Model class name.
+ * @property string $name Model cache unique snake-case name.
+ * @method ?\Covaleski\Laravel\Catalog\Model\TAttribute getAttribute(string $type) Get the first attribute of the specified class name.
+ * @method array<int, \Covaleski\Laravel\Catalog\Model\TAttribute> getAttributes(string $type) Get all attributes of the specified class name.
  *
- * @uses Covaleski\Laravel\Catalog\Resource\ResourceCache to proxy its members.
+ * @uses Covaleski\Laravel\Catalog\Model\ModelCache to proxy its members.
  */
-class ResourceAccessor
+class ModelAccessor
 {
     /**
      * Filesystem disk instance.
@@ -29,19 +29,19 @@ class ResourceAccessor
     protected ModelCompiler $modelCompiler;
 
     /**
-     * Resource cache file path.
+     * Model cache file path.
      */
     protected string $path;
 
     /**
-     * Resource cache.
+     * Model cache.
      */
-    protected ResourceCache $resourceCache;
+    protected ModelCache $modelCache;
 
     /**
-     * Resource parser.
+     * Model parser.
      */
-    protected ResourceParser $resourceParser;
+    protected ModelParser $modelParser;
 
     /**
      * Invoke an inaccessible method.
@@ -52,13 +52,13 @@ class ResourceAccessor
     }
 
     /**
-     * Create the resource accessor instance.
+     * Create the model accessor instance.
      *
      * @param class-string<Model> $model
      */
     public function __construct(
         /**
-         * Resource name.
+         * Model cache unique snake-case name.
          */
         public string $name,
 
@@ -71,7 +71,7 @@ class ResourceAccessor
     ) {
         $this->modelCompiler = $this->makeModelCompiler();
         $this->path = $this->makePath();
-        $this->resourceParser = $this->makeResourceParser();
+        $this->modelParser = $this->makeModelParser();
     }
 
     /**
@@ -91,9 +91,9 @@ class ResourceAccessor
     }
 
     /**
-     * Ensure resource cache data is in storage.
+     * Ensure model cache data is in storage.
      *
-     * If not in memory, also compiles the resource cache.
+     * If not in memory, also compiles the model cache.
      */
     public function cache(): void
     {
@@ -106,7 +106,7 @@ class ResourceAccessor
     }
 
     /**
-     * Clear resource cache data from memory and storage.
+     * Clear model cache data from memory and storage.
      */
     public function clear(): void
     {
@@ -115,15 +115,15 @@ class ResourceAccessor
     }
 
     /**
-     * Compile resource cache data to memory.
+     * Compile model cache data to memory.
      */
     public function compile(): void
     {
-        $this->resourceCache = $this->modelCompiler->compile();
+        $this->modelCache = $this->modelCompiler->compile();
     }
 
     /**
-     * Delete resource cache data from storage.
+     * Delete model cache data from storage.
      */
     public function delete(): void
     {
@@ -133,23 +133,23 @@ class ResourceAccessor
     }
 
     /**
-     * Get the resource cache.
+     * Get the model cache.
      *
-     * If not cached in memory, loads the resource cache file.
+     * If not in memory, loads the model cache file.
      *
-     * If the not cached in storage, compiles the resource cache.
+     * If not in storage, compiles the model cache.
      */
-    public function get(): ResourceCache
+    public function get(): ModelCache
     {
         if (!$this->isLoaded()) {
             $this->cache();
             $this->load();
         }
-        return $this->resourceCache;
+        return $this->modelCache;
     }
 
     /**
-     * Get the resource cache data file size in storage.
+     * Get the model cache data file size in storage.
      */
     public function getSize(): ?int
     {
@@ -157,7 +157,7 @@ class ResourceAccessor
     }
 
     /**
-     * Get the resource cache file's last modified timestamp in storage.
+     * Get the model cache file's last modified timestamp in storage.
      */
     public function getTimestamp(): ?int
     {
@@ -165,7 +165,7 @@ class ResourceAccessor
     }
 
     /**
-     * Check whether resource cache data is in storage.
+     * Check whether model cache data is in storage.
      */
     public function isCached(): bool
     {
@@ -173,42 +173,42 @@ class ResourceAccessor
     }
 
     /**
-     * Check whether resource cache data is loaded to memory.
+     * Check whether model cache data is loaded to memory.
      */
     public function isLoaded(): bool
     {
-        return isset($this->resourceCache);
+        return isset($this->modelCache);
     }
 
     /**
-     * Load resource cache data from storage.
+     * Load model cache data from storage.
      */
     public function load(): void
     {
         if (!$this->isCached()) {
-            throw new RuntimeException('Resource is not cached.');
+            throw new RuntimeException('Model is not cached.');
         }
-        $this->resourceCache = $this->parse($this->getDisk()->get($this->path));
+        $this->modelCache = $this->parse($this->getDisk()->get($this->path));
     }
 
     /**
-     * Save resource cache data from memory to storage.
+     * Save model cache data from memory to storage.
      */
     public function save(): void
     {
         if (!$this->isLoaded()) {
-            throw new RuntimeException('Resource cache is not set.');
+            throw new RuntimeException('Model cache is not set.');
         }
-        $contents = $this->unparse($this->resourceCache);
+        $contents = $this->unparse($this->modelCache);
         $this->getDisk()->put($this->path, $contents);
     }
 
     /**
-     * Clear resource cache data from memory.
+     * Clear model cache data from memory.
      */
     public function unload(): void
     {
-        unset($this->resourceCache);
+        unset($this->modelCache);
     }
 
     /**
@@ -245,26 +245,26 @@ class ResourceAccessor
     }
 
     /**
-     * Create a resource parser instance for the current context.
+     * Create a model parser instance for the current context.
      */
-    protected function makeResourceParser(): ResourceParser
+    protected function makeModelParser(): ModelParser
     {
-        return new ResourceParser();
+        return new ModelParser();
     }
 
     /**
-     * Parse serialized data into a `ResourceCache` instance.
+     * Parse serialized data into a `ModelCache` instance.
      */
-    protected function parse(string $data): ResourceCache
+    protected function parse(string $data): ModelCache
     {
-        return $this->resourceParser->parse($data);
+        return $this->modelParser->parse($data);
     }
 
     /**
-     * Turn a `ResourceCache` instance into serialized data.
+     * Turn a `ModelCache` instance into serialized data.
      */
-    protected function unparse(ResourceCache $data): string
+    protected function unparse(ModelCache $data): string
     {
-        return $this->resourceParser->unparse($data);
+        return $this->modelParser->unparse($data);
     }
 }

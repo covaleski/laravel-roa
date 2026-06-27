@@ -1,9 +1,9 @@
 <?php
 
-namespace Covaleski\Laravel\Catalog\Resource;
+namespace Covaleski\Laravel\Catalog\Model;
 
-use Covaleski\Laravel\Catalog\Attributes\ResourceName;
-use Covaleski\Laravel\Catalog\Interfaces\ResourceAttributeInterface;
+use Covaleski\Laravel\Catalog\Attributes\CacheName;
+use Covaleski\Laravel\Catalog\Interfaces\ModelAttributeInterface;
 use Covaleski\Laravel\Catalog\Traits\ParsesDocComments;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -43,30 +43,30 @@ class ModelCompiler
     }
 
     /**
-     * Compile the model to a resource cache instance.
+     * Compile the model into a cache instance.
      */
-    public function compile(): ResourceCache
+    public function compile(): ModelCache
     {
         $this->initialize();
-        $resource = new ResourceCache();
-        $resource->name = $this->compileName();
-        $resource->model = $this->model;
-        $resource->attributes = $this->compileAttributes();
-        $resource->relationships = $this->compileRelationships();
-        return $resource;
+        $model = new ModelCache();
+        $model->name = $this->compileName();
+        $model->model = $this->model;
+        $model->attributes = $this->compileAttributes();
+        $model->relationships = $this->compileRelationships();
+        return $model;
     }
 
     /**
-     * Get the resource attributes from the model.
+     * Get compiler attributes from the model.
      *
-     * @return array<int, ResourceAttributeInterface>
+     * @return array<int, ModelAttributeInterface>
      */
     public function compileAttributes(): array
     {
         $this->initialize();
         return Arr::map(
             $this->reflection->getAttributes(
-                ResourceAttributeInterface::class,
+                ModelAttributeInterface::class,
                 ReflectionAttribute::IS_INSTANCEOF,
             ),
             fn ($v) => $v->newInstance(),
@@ -74,12 +74,12 @@ class ModelCompiler
     }
 
     /**
-     * Get the resource name from the model.
+     * Get the cache name for the model.
      */
     public function compileName(): string
     {
         $this->initialize();
-        $attributes = $this->reflection->getAttributes(ResourceName::class);
+        $attributes = $this->reflection->getAttributes(CacheName::class);
         return isset($attributes[0])
             ? $attributes[0]->newInstance()->name
             : Str::plural(Str::kebab(class_basename($this->model)));
@@ -95,7 +95,7 @@ class ModelCompiler
         return new Relationship(
             relation: $relation::class,
             model: $related::class,
-            resource: (new ModelCompiler($related::class))->compileName(),
+            name: (new ModelCompiler($related::class))->compileName(),
         );
     }
 

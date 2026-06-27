@@ -1,6 +1,6 @@
 <?php
 
-namespace Covaleski\Laravel\Catalog\Resource;
+namespace Covaleski\Laravel\Catalog\Model;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
@@ -13,7 +13,7 @@ use RuntimeException;
 use function Covaleski\Laravel\Catalog\file_get_classes;
 use function Illuminate\Filesystem\join_paths;
 
-class ResourceMap
+class ModelMap
 {
     /**
      * Cache directory disk instance.
@@ -23,7 +23,7 @@ class ResourceMap
     /**
      * Map data.
      *
-     * Links resource names to model class names.
+     * Links model cache names to model class names.
      *
      * @var array<string, class-string<Model>>
      */
@@ -35,14 +35,14 @@ class ResourceMap
     protected string $path;
 
     /**
-     * Instantiated resource accessors.
+     * Instantiated model accessors.
      *
-     * @var array<string, ResourceAccessor>
+     * @var array<string, ModelAccessor>
      */
-    protected array $resourceAccessors = [];
+    protected array $modelAccessors = [];
 
     /**
-     * Create the resource loader instance.
+     * Create the model loader instance.
      */
     public function __construct()
     {
@@ -50,9 +50,9 @@ class ResourceMap
     }
 
     /**
-     * Get all mapped resources.
+     * Get all mapped models.
      *
-     * @return array<string, ResourceAccessor>
+     * @return array<string, ModelAccessor>
      */
     public function all(): array
     {
@@ -106,21 +106,21 @@ class ResourceMap
     }
 
     /**
-     * Execute a callback over each mapped resource.
+     * Execute a callback over each mapped model.
      *
-     * @param callable(ResourceAccessor $resource, string $name): void $callback
+     * @param callable(ModelAccessor $model, string $name): void $callback
      */
     public function each(callable $callback): void
     {
-        foreach ($this->all() as $name => $resource) {
-            if ($callback($resource, $name) === false) {
+        foreach ($this->all() as $name => $model) {
+            if ($callback($model, $name) === false) {
                 break;
             }
         }
     }
 
     /**
-     * Check whether a resource is mapped.
+     * Check whether a model is mapped.
      */
     public function exists(string $name): bool
     {
@@ -129,19 +129,19 @@ class ResourceMap
     }
 
     /**
-     * Get a resource by its name.
+     * Get a model by its cache name.
      */
-    public function get(string $name): ResourceAccessor
+    public function get(string $name): ModelAccessor
     {
         if (!$this->exists($name)) {
-            $message = "No resource is mapped as '{$name}'";
+            $message = "No model is mapped as '{$name}'";
             throw new InvalidArgumentException($message);
         }
-        $this->resourceAccessors[$name] ??= new ResourceAccessor(
+        $this->modelAccessors[$name] ??= new ModelAccessor(
             $name,
             $this->map[$name],
         );
-        return $this->resourceAccessors[$name];
+        return $this->modelAccessors[$name];
     }
 
     /**
@@ -200,7 +200,7 @@ class ResourceMap
     public function load(): void
     {
         if (!$this->isCached()) {
-            throw new RuntimeException('Resource is not cached.');
+            throw new RuntimeException('Model is not cached.');
         }
         $this->map = $this->parse($this->getCacheDisk()->get($this->path));
     }
@@ -211,7 +211,7 @@ class ResourceMap
     public function save(): void
     {
         if (!$this->isLoaded()) {
-            throw new RuntimeException('Resource cache is not set.');
+            throw new RuntimeException('Model cache is not set.');
         }
         $this->getCacheDisk()->put($this->path, $this->unparse($this->map));
     }
@@ -221,11 +221,11 @@ class ResourceMap
      */
     public function unload(): void
     {
-        unset($this->map, $this->resourceAccessors);
+        unset($this->map, $this->modelAccessors);
     }
 
     /**
-     * Clear map and resource cache data from memory and storage.
+     * Clear model map and cache data from memory and storage.
      */
     public function wipe(): void
     {
@@ -238,7 +238,7 @@ class ResourceMap
     }
 
     /**
-     * Compile the resource name of a model class.
+     * Compile the cache name of a model class.
      */
     protected function compileName(string $class_name): string
     {
@@ -274,11 +274,11 @@ class ResourceMap
     }
 
     /**
-     * Create a resource map file path for the current context.
+     * Create a model map file path for the current context.
      */
     protected function makePath(): string
     {
-        return "resources.map";
+        return "models.map";
     }
 
     /**

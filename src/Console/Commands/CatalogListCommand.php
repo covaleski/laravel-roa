@@ -32,8 +32,8 @@ class CatalogListCommand extends Command
         $this->newLine();
         Catalog::getDirectories()->each(fn ($dir) => $this->line($dir));
         $this->newLine();
-        // Output resource list
-        $this->info('Resources:');
+        // Output model list
+        $this->info('Models:');
         $this->newLine();
         $this->table(
             [
@@ -42,14 +42,14 @@ class CatalogListCommand extends Command
                 'Cache Size',
                 'Last Cached',
             ],
-            collect(Catalog::all())->map(fn ($resource) => [
-                $resource->name,
-                $resource->model,
-                $resource->isCached()
-                    ? format_size_units($resource->getSize())
+            collect(Catalog::all())->map(fn ($model) => [
+                $model->name,
+                $model->model,
+                $model->isCached()
+                    ? format_size_units($model->getSize())
                     : 'Not cached',
-                $resource->isCached()
-                    ? date('Y-m-d H:i:s', $resource->getTimestamp())
+                $model->isCached()
+                    ? date('Y-m-d H:i:s', $model->getTimestamp())
                     : 'Never',
             ])->all(),
         );
